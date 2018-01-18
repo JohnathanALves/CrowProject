@@ -8,11 +8,7 @@ var ifaceKey = Object.keys(ifaces)[1];
 var NET_ADAPTER = ifaces[ifaceKey].pop(); //main network adapter
 var IP_ADDR = NET_ADAPTER['address'];
 var NETMSK_ADDR = NET_ADAPTER['netmask'];
-var BROADCAST_ADDR = iputils.or(IP_ADDR, NETMSK_ADDR);
-
-console.log('IP: '+IP_ADDR);
-console.log('network: '+NETMSK_ADDR);
-console.log('broadcast: '+BROADCAST_ADDR);
+var BROADCAST_ADDR = iputils.subnet(IP_ADDR, NETMSK_ADDR)['broadcastAddress'];
 
 var dgram = require('dgram'); 
 var server = dgram.createSocket("udp4"); 
@@ -37,12 +33,11 @@ server.bind({
 },
     function() {
     server.setBroadcast(true);
-    // setInterval(broadcastNew, 3000);
+    setInterval(broadcastNew, 3000);
 });
 
 function broadcastNew() {
     var message = new Buffer("Broadcast message!");
     server.send(message, 0, message.length, PORT, BROADCAST_ADDR, function() {
-        console.log("Sent '" + message + "'");
     });
 }
