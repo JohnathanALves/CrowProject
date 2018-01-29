@@ -45,6 +45,33 @@ SocketClient.prototype.findServer = function(port, callback){
     client.bind(port);
 }
 
+SocketClient.prototype.listener = function(port){
+    EventEmitter.call(this);
+    const that = this;
+
+    var net = require('net');
+    var server = net.createServer(function(connection) { 
+        console.log('Servidor Conectou-se!');
+        
+        connection.on('data', function(data){
+            let msg = data.toString();
+            if(msg.includes('Execute:')){
+                let res = msg.slice(8);
+                that.emit('execute', res);
+            }
+        });
+
+        connection.on('end', function() {
+            console.log('Servidor Desconectou-se!');
+        });
+    });
+    server.listen(port, function() { 
+        console.log('listenning to server messages!');
+    });
+}
+
+
+
 util.inherits(SocketClient, EventEmitter)
 
 module.exports = SocketClient;

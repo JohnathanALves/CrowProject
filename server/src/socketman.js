@@ -64,4 +64,21 @@ SocketMan.prototype.findClients = function(port, timeout, callback){
 
 }
 
+SocketMan.prototype.send = function(client, port){
+    var net = require('net');
+    var client = net.connect({host: client ,port: port}, function() {
+       console.log('connected to server!');  
+       client.write('Execute:teste\r\n');
+    });
+    client.on('data', function(data) {
+       console.log(data.toString());
+       client.end();
+    });
+
+    
+    client.on('end', function() { 
+       console.log('disconnected from server');
+    });
+}
+
 module.exports = SocketMan;
