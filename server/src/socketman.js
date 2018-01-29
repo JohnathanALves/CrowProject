@@ -42,7 +42,11 @@ SocketMan.prototype.findClients = function(port, timeout, callback){
             console.log('encerrando conexão..');
             clearTimeout(loop);
             server.close()
-            return callback(clients.slice(2));
+            if (clients){
+                return callback(null, clients.slice(2));
+            } else {
+                return callback(true, null);
+            }
         }, timeout);
     });
 
