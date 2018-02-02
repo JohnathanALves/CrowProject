@@ -1,13 +1,30 @@
 # CrowProject
 Javascript library for performance monitor on distributed systems
 
-comando para executar o container no Docker
+## Instruções
+Clone o repositório em seu computador:
+`git clone https://github.com/JohnathanALves/CrowProject.git`
 
-<hr>
-Servidor
-<br>
-docker run -p 6024:6024 -d -v DIRETORIO_LOCAL_SRC:/app/src node-server
-<hr>
-Cliente
-<br>
-docker run -p 6024:6024 -d -v DIRETORIO_LOCAL_SRC:/app/src node-client
+Dentro dos diretórios ./client e ./server rode o comando:
+`npm install`
+
+Você está pronto para construir as imagens
+
+### Build servidor:
+Dentro da pasta server
+`docker build -t node-server .`
+
+### Build cliente:
+Dentro da pasta cliente
+`docker build -t node-client .`
+
+### Executando o projeto:
+Primeiro instancie um servidor
+`docker run -it --rm -v <CAMINHO_ABSOLUTO_PARA_A_PASTA_SERVER/SRC>:/app/src node-server`
+Depois instancie seus clientes
+`docker run -it --rm -v <CAMINHO_ABSOLUTO_PARA_A_PASTA_CLIENT/SRC>:/app/src node-client`
+
+## Trabalhos futuros
+ - Conexão com banco de dados MongoDB
+ - Gerar relatório com os resultados
+ 
