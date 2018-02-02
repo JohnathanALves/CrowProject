@@ -7,10 +7,6 @@ ADD package.json /app
 
 RUN npm install
 
-RUN npm install --global nodemon
-
-#RUN npm install --global docker-nodemon
-
 VOLUME /app/src
 
 # Expose the app port

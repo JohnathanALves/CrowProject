@@ -3,6 +3,7 @@
 
 var sm = require('./socketman.js');
 var socketMan = new sm();
+var clientMongo = new require('./clientMongo.js')();
 
 var PORT = 6024;
 var timeout = 5000;
