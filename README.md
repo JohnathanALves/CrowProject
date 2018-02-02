@@ -19,10 +19,11 @@ Dentro da pasta cliente
 `docker build -t node-client .`
 
 ### Executando o projeto:
-Primeiro instancie um servidor
-`docker run -it --rm -v <CAMINHO_ABSOLUTO_PARA_A_PASTA_SERVER/SRC>:/app/src node-server`
-Depois instancie seus clientes
+Primeiro instancie seus clientes
 `docker run -it --rm -v <CAMINHO_ABSOLUTO_PARA_A_PASTA_CLIENT/SRC>:/app/src node-client`
+Depois instancie um servidor
+`docker run -it --rm -v <CAMINHO_ABSOLUTO_PARA_A_PASTA_SERVER/SRC>:/app/src node-server`
+
 
 ## Trabalhos futuros
  - Conexão com banco de dados MongoDB
