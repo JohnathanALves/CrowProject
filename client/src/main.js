@@ -14,7 +14,7 @@ socketClient.on('FoundServer', function(server){
 
     socketClient.on('execute',  function(msg){ // evento é disparado ao receber mensagem para executar
         // msg contem a mesagem enviada do servidor..
-        console.log(msg);
+        console.log('resposta do execute: ' + msg);
     }); 
 });
 
