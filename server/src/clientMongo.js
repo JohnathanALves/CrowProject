@@ -9,5 +9,8 @@ function ClientMongo(url, port){
     });
 };
 
+function sendData(){
+    
+}
 
 module.exports = ClientMongo;
