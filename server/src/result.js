@@ -6,6 +6,6 @@ var resultSchema = mongoose.Schema({
     net_time: Number,
     exec_time: Number
 });
-var Result = mongoose.model('DataModel', resultSchema);
+var Result = mongoose.model('Result', resultSchema);
 
 module.exports = Result;
