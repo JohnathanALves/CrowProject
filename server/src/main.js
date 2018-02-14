@@ -5,11 +5,12 @@ var sm = require('./socketman.js');
 var socketMan = new sm();
 
 var mongoose = require('mongoose');
-mongoose.connect('mongodb://10.87.41.151/crow-project-db');
+let db_ip = '172.17.0.4';
+mongoose.connect('mongodb://' + db_ip + '/crow-project-db');
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function() {
-  console.log('Conectado ao servidor MongoDB: 10.87.41.151');
+  console.log('Conectado ao servidor MongoDB: ' + db_ip);
 });
 
 var PORT = 6024;
