@@ -72,27 +72,27 @@ SocketMan.prototype.send = function (client, port) {
     var net = require('net');
 
     //variaveis de tempo
-    let timeA, diff;
+    let initTotalTime, diff;
     let NS_PER_SEC = 1e9;
 
     var client = net.connect({ host: client, port: port }, function () {
         console.log('connected to client');
 
         //inicia a contagem do tempo total
-        timeA = process.hrtime();
+        initTotalTime = process.hrtime();
 
-        client.write('Execute:teste\r\n');
+        client.write('Execute:node ./src/consumerTest.js');
     });
 
     client.on('data', function (data) {
         //finaliza a contagem do tempo total
-        const diff = process.hrtime(timeA);
+        const diff = process.hrtime(initTotalTime);
 
-        let execTime = diff[0] * NS_PER_SEC + diff[1];
+        let totalTime = diff[0] * NS_PER_SEC + diff[1];
 
         //colocar função que salva no banco aqui
-        console.log('tempo de execução: ' + execTime + ' nanosegundos - dado do cliente: ' + data.toString());
-
+        console.log('tempo total: ' + totalTime + ' ns - tempo de execução: ' + data.toString() + ' ns');
+        
         //encerra conexão com o cliente
         client.end();
 

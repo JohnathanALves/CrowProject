@@ -58,16 +58,40 @@ SocketClient.prototype.listener = function (port) {
 
             //executa a função consumidora de tempo
             if (msg.includes('Execute:')) {
+                //variaveis de tempo
+                let initExecTime, diff;
+                let NS_PER_SEC = 1e9;
 
-                //calcula um numero aleatorio só pra representar o tempo de excução e testar a comunicação
-                let res = ((Math.floor((Math.random() * 10) + 1)) * 1000);
+                let command = msg.slice(8);
 
-                setTimeout(() => {
-                    that.emit('execute', res);
+                const exec = require('child_process').exec;
 
-                    //precisa criar a prototype.send? ou deixa assim?
-                    connection.write(res.toString());
-                }, res);
+                //inicia a contagem do tempo total
+                initExecTime = process.hrtime();
+
+                exec(command, (e, stdout, stderr) => {
+                    if (e instanceof Error) {
+                        console.error(e);
+                        throw e;
+                    }
+                    console.log('stdout ', stdout);
+                    console.log('stderr ', stderr);
+
+                    const diff = process.hrtime(initExecTime);
+
+                    let totalExecTime = diff[0] * NS_PER_SEC + diff[1];
+                    // that.emit('execute', res);
+                    connection.write(totalExecTime.toString());
+                });
+                // //calcula um numero aleatorio só pra representar o tempo de execução e testar a comunicação
+                // let res = ((Math.floor((Math.random() * 10) + 1)) * 1000);
+
+                // setTimeout(() => {
+                //     that.emit('execute', res);
+
+                //     //precisa criar a prototype.send? ou deixa assim?
+                //     connection.write(res.toString());
+                // }, res);
 
                 // let res = msg.slice(8);
 
