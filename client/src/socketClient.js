@@ -61,46 +61,47 @@ SocketClient.prototype.listener = function (port) {
         connection.on('data', function (data) {
             let msg = data.toString();
 
+            console.log('msg: ' + data.toString());
             //executa a função consumidora de tempo
-            if (msg.includes('Execute:')) {
-                //variaveis de tempo
-                let initExecTime, diff;
-                let NS_PER_SEC = 1e9;
+            // if (msg.includes('Execute:')) {
+            //     //variaveis de tempo
+            //     let initExecTime, diff;
+            //     let NS_PER_SEC = 1e9;
 
-                let command = msg.slice(8);
+            //     let command = msg.slice(8);
 
-                const exec = require('child_process').exec;
+            //     const exec = require('child_process').exec;
 
-                //inicia a contagem do tempo total
-                initExecTime = process.hrtime();
+            //     //inicia a contagem do tempo total
+            //     initExecTime = process.hrtime();
 
-                exec(command, (e, stdout, stderr) => {
-                    if (e instanceof Error) {
-                        console.error(e);
-                        throw e;
-                    }
-                    console.log('stdout ', stdout);
-                    console.log('stderr ', stderr);
+            //     exec(command, (e, stdout, stderr) => {
+            //         if (e instanceof Error) {
+            //             console.error(e);
+            //             throw e;
+            //         }
+            //         console.log('stdout ', stdout);
+            //         console.log('stderr ', stderr);
 
-                    const diff = process.hrtime(initExecTime);
+            //         const diff = process.hrtime(initExecTime);
 
-                    let totalExecTime = diff[0] * NS_PER_SEC + diff[1];
-                    // that.emit('execute', res);
-                    connection.write(totalExecTime.toString());
-                });
-                // //calcula um numero aleatorio só pra representar o tempo de execução e testar a comunicação
-                // let res = ((Math.floor((Math.random() * 10) + 1)) * 1000);
+            //         let totalExecTime = diff[0] * NS_PER_SEC + diff[1];
+            //         // that.emit('execute', res);
+            //         connection.write(totalExecTime.toString());
+            //     });
+            //     // //calcula um numero aleatorio só pra representar o tempo de execução e testar a comunicação
+            //     // let res = ((Math.floor((Math.random() * 10) + 1)) * 1000);
 
-                // setTimeout(() => {
-                //     that.emit('execute', res);
+            //     // setTimeout(() => {
+            //     //     that.emit('execute', res);
 
-                //     //precisa criar a prototype.send? ou deixa assim?
-                //     connection.write(res.toString());
-                // }, res);
+            //     //     //precisa criar a prototype.send? ou deixa assim?
+            //     //     connection.write(res.toString());
+            //     // }, res);
 
-                // let res = msg.slice(8);
+            //     // let res = msg.slice(8);
 
-            };
+            // };
         });
 
         connection.on('end', function () {

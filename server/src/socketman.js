@@ -1,3 +1,7 @@
+// emissao de eventos
+const EventEmitter = require('events')
+const util = require('util')
+
 
 var os = require('os');
 var iputils = require('ip');
@@ -51,8 +55,8 @@ SocketMan.prototype.findClients = function (port, timeout, callback) {
     });
 
     server.bind({
-        port: port,
-    },
+            port: port,
+        },
         function () {
             server.setBroadcast(true);
             loop = setInterval(function () {
@@ -62,48 +66,73 @@ SocketMan.prototype.findClients = function (port, timeout, callback) {
 
     function broadcastNew() {
         var message = new Buffer("Broadcast");
-        server.send(message, 0, message.length, port, broadcastAddr, function () {
-        });
+        server.send(message, 0, message.length, port, broadcastAddr, function () {});
     }
 
 }
 
-SocketMan.prototype.send = function (client, port) {
+SocketMan.prototype.AbreConexao = function (client, port) {
     var net = require('net');
 
-    //variaveis de tempo
-    let initTotalTime, diff;
-    let NS_PER_SEC = 1e9;
+    EventEmitter.call(this);
+    const that = this;
 
-    var client = net.connect({ host: client, port: port }, function () {
+    //variaveis de tempo
+    // let initTotalTime, diff;
+    // let NS_PER_SEC = 1e9;
+
+    var client = net.connect({
+        host: client,
+        port: port
+    }, function () {
         console.log('connected to client');
 
         //inicia a contagem do tempo total
-        initTotalTime = process.hrtime();
+        // initTotalTime = process.hrtime();
 
-        client.write('Execute:node ./src/consumerTest.js');
+        // client.write('Execute:node ./src/consumerTest.js');
     });
 
     client.on('data', function (data) {
-        //finaliza a contagem do tempo total
-        const diff = process.hrtime(initTotalTime);
+        let head = (data.toString()).slice(0, 4);
+        let msg = (data.toString()).slice(4);
 
-        let totalTime = diff[0] * NS_PER_SEC + diff[1];
+        console.log('msg: ' + data.toString());
 
-        //colocar função que salva no banco aqui
-        console.log('tempo total: ' + totalTime + ' ns - tempo de execução: ' + data.toString() + ' ns');
-        
-        //encerra conexão com o cliente
-        client.end();
+        if (head == 'resp') {
+            that.emit('resp', msg);
+        }
 
-        //encerra o processo filho
-        process.send('end');
+        // if (msg.includes('Execute:'))
+
+        // //finaliza a contagem do tempo total
+        // const diff = process.hrtime(initTotalTime);
+
+        // let totalTime = diff[0] * NS_PER_SEC + diff[1];
+
+        // //colocar função que salva no banco aqui
+        // console.log('tempo total: ' + totalTime + ' ns - tempo de execução: ' + data.toString() + ' ns');
+
+        // //encerra conexão com o cliente
+        // client.end();
+
+        // //encerra o processo filho
+        // process.send('end');
     });
-
-
     client.on('end', function () {
         console.log('disconnected from server');
     });
+    return client;
 }
+
+SocketMan.prototype.sender = function (socket, message) {
+    socket.write(message.toString());
+    console.log('Mensagem enviada!');
+}
+
+
+
+util.inherits(SocketMan, EventEmitter)
+
 
 module.exports = SocketMan;

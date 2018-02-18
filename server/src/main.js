@@ -1,6 +1,7 @@
-
 // var ifaces = os.networkInterfaces();
-const { fork } = require('child_process');
+const {
+    fork
+} = require('child_process');
 var sm = require('./socketman.js');
 var socketMan = new sm();
 
@@ -9,8 +10,8 @@ let db_ip = '172.17.0.4';
 mongoose.connect('mongodb://' + db_ip + '/crow-project-db');
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
-db.once('open', function() {
-  console.log('Conectado ao servidor MongoDB: ' + db_ip);
+db.once('open', function () {
+    console.log('Conectado ao servidor MongoDB: ' + db_ip);
 });
 
 var PORT = 6024;
@@ -25,24 +26,25 @@ socketMan.findClients(PORT, timeout, function (err, clients) { // clients é a l
     clients.forEach(client_addr => {
 
         //cria o processo filho para o endereço atual
-        const forked = fork('./src/messenger.js');
+        // const forked = fork('./src/messenger.js');
 
-        forked.on('message', (msg) => {
-            // console.log('Message from child:', msg);
-            if (msg === 'end') {
-                forked.kill('SIGINT');
-                if (forked.killed) {
-                    console.log('Child process with PID ' + forked.pid + ' received the kill message.');
-                };
-            };
-        });
+        // forked.on('message', (msg) => {
+        //     // console.log('Message from child:', msg);
+        //     if (msg === 'end') {
+        //         forked.kill('SIGINT');
+        //         if (forked.killed) {
+        //             console.log('Child process with PID ' + forked.pid + ' received the kill message.');
+        //         };
+        //     };
+        // });
 
-        forked.send({
-            addr: client_addr,
-            port: PORT
-        });
+        // forked.send({
+        //     addr: client_addr,
+        //     port: PORT
+        // });
 
-        //socketMan.send(client_addr, PORT); // a funcao send envia uma mensagem do tipo Execute para o cliente
+        var conexao = socketMan.AbreConexao(client_addr, PORT); // a funcao send envia uma mensagem do tipo Execute para o cliente
+        socketMan.sender(conexao, 'Hello from Server');
     });
 
 });
