@@ -35,7 +35,10 @@ SocketClient.prototype.findServer = function (port, callback) {
             let message = 'Broadcast';
             client.send(message, 0, message.length, port, rinfo.address, function () {
                 client.close();
-                return callback({ 'ip': rinfo.address, 'porta': rinfo.port });
+                return callback({
+                    'ip': rinfo.address,
+                    'porta': rinfo.port
+                });
             });
 
         }
@@ -48,9 +51,11 @@ SocketClient.prototype.findServer = function (port, callback) {
 SocketClient.prototype.listener = function (port) {
     EventEmitter.call(this);
     const that = this;
+    var conexao;
 
     var net = require('net');
     var server = net.createServer(function (connection) {
+        conexao = connection;
         console.log('Servidor Conectou-se!');
 
         connection.on('data', function (data) {
@@ -102,14 +107,19 @@ SocketClient.prototype.listener = function (port) {
             console.log('Servidor Desconectou-se!');
         });
     });
+
     server.listen(port, function () {
         console.log('listenning to server messages!');
     });
+    return conexao;
 }
 
+SocketClient.prototype.sender = function (socket, message) {
+    socket.write(message.toString());
+    console.log('Mensagem enviada!');
+}
 
 
 util.inherits(SocketClient, EventEmitter)
 
 module.exports = SocketClient;
-
