@@ -71,7 +71,7 @@ SocketMan.prototype.findClients = function (port, timeout, callback) {
 
 }
 
-SocketMan.prototype.AbreConexao = function (client, port) {
+SocketMan.prototype.AbreConexao = function (client, port, callback) {
     var net = require('net');
 
     EventEmitter.call(this);
@@ -93,14 +93,17 @@ SocketMan.prototype.AbreConexao = function (client, port) {
         // client.write('Execute:node ./src/consumerTest.js');
     });
 
+    callback(client);
+
     client.on('data', function (data) {
         let head = (data.toString()).slice(0, 4);
         let msg = (data.toString()).slice(4);
 
-        console.log('msg: ' + data.toString());
+        // console.log('msg: ' + data.toString());
 
         if (head == 'resp') {
-            that.emit('resp', msg);
+            let value = parseFloat(msg);
+            that.emit('response', value);
         }
 
         // if (msg.includes('Execute:'))
@@ -122,12 +125,24 @@ SocketMan.prototype.AbreConexao = function (client, port) {
     client.on('end', function () {
         console.log('disconnected from server');
     });
-    return client;
+
+    client.on('error', function(){
+        console.log('Socket Error!');
+        connection.close();
+    });
 }
 
 SocketMan.prototype.sender = function (socket, message) {
-    socket.write(message.toString());
-    console.log('Mensagem enviada!');
+    let msg = message.toString();
+    socket.write(msg, function(){
+        console.log('msg: '+ msg + ' enviada!');
+    });
+    
+}
+
+SocketMan.prototype.sendExecute = function(socket, comando) {
+    let msg = 'exec' + comando.toString();
+    this.sender(socket, msg);
 }
 
 
