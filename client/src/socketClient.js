@@ -35,7 +35,10 @@ SocketClient.prototype.findServer = function (port, callback) {
             let message = 'Broadcast';
             client.send(message, 0, message.length, port, rinfo.address, function () {
                 client.close();
-                return callback({ 'ip': rinfo.address, 'porta': rinfo.port });
+                return callback({
+                    'ip': rinfo.address,
+                    'porta': rinfo.port
+                });
             });
 
         }
@@ -45,71 +48,99 @@ SocketClient.prototype.findServer = function (port, callback) {
     client.bind(port);
 }
 
-SocketClient.prototype.listener = function (port) {
+SocketClient.prototype.listener = function (port, callback) {
     EventEmitter.call(this);
     const that = this;
+    var conexao;
 
     var net = require('net');
     var server = net.createServer(function (connection) {
+        callback(connection);
         console.log('Servidor Conectou-se!');
 
         connection.on('data', function (data) {
-            let msg = data.toString();
+            let head = (data.toString()).slice(0, 4);
+            let msg = (data.toString()).slice(4);
+    
 
+            if (head == 'exec') {
+                that.emit('execute', msg);
+            }
             //executa a função consumidora de tempo
-            if (msg.includes('Execute:')) {
-                //variaveis de tempo
-                let initExecTime, diff;
-                let NS_PER_SEC = 1e9;
+            // if (msg.includes('Execute:')) {
+            //     //variaveis de tempo
+            //     let initExecTime, diff;
+            //     let NS_PER_SEC = 1e9;
 
-                let command = msg.slice(8);
+            //     let command = msg.slice(8);
 
-                const exec = require('child_process').exec;
+            //     const exec = require('child_process').exec;
 
-                //inicia a contagem do tempo total
-                initExecTime = process.hrtime();
+            //     //inicia a contagem do tempo total
+            //     initExecTime = process.hrtime();
 
-                exec(command, (e, stdout, stderr) => {
-                    if (e instanceof Error) {
-                        console.error(e);
-                        throw e;
-                    }
-                    console.log('stdout ', stdout);
-                    console.log('stderr ', stderr);
+            //     exec(command, (e, stdout, stderr) => {
+            //         if (e instanceof Error) {
+            //             console.error(e);
+            //             throw e;
+            //         }
+            //         console.log('stdout ', stdout);
+            //         console.log('stderr ', stderr);
 
-                    const diff = process.hrtime(initExecTime);
+            //         const diff = process.hrtime(initExecTime);
 
-                    let totalExecTime = diff[0] * NS_PER_SEC + diff[1];
-                    // that.emit('execute', res);
-                    connection.write(totalExecTime.toString());
-                });
-                // //calcula um numero aleatorio só pra representar o tempo de execução e testar a comunicação
-                // let res = ((Math.floor((Math.random() * 10) + 1)) * 1000);
+            //         let totalExecTime = diff[0] * NS_PER_SEC + diff[1];
+            //         // that.emit('execute', res);
+            //         connection.write(totalExecTime.toString());
+            //     });
+            //     // //calcula um numero aleatorio só pra representar o tempo de execução e testar a comunicação
+            //     // let res = ((Math.floor((Math.random() * 10) + 1)) * 1000);
 
-                // setTimeout(() => {
-                //     that.emit('execute', res);
+            //     // setTimeout(() => {
+            //     //     that.emit('execute', res);
 
-                //     //precisa criar a prototype.send? ou deixa assim?
-                //     connection.write(res.toString());
-                // }, res);
+            //     //     //precisa criar a prototype.send? ou deixa assim?
+            //     //     connection.write(res.toString());
+            //     // }, res);
 
-                // let res = msg.slice(8);
+            //     // let res = msg.slice(8);
 
-            };
+            // };
+
         });
 
         connection.on('end', function () {
             console.log('Servidor Desconectou-se!');
         });
+
+        connection.on('error', function(){
+            console.log('Socket Error!');
+            connection.close();
+        });
     });
+
     server.listen(port, function () {
         console.log('listenning to server messages!');
     });
+    
 }
 
+SocketClient.prototype.sender = function (conexao, message) {
+    if (conexao.destroyed){
+        console.log('Conexao encerrada!');
+        return false
+    } else {
+        conexao.write(message.toString(), function(){
+            return true;
+        });
+    }    
+}
 
+SocketClient.prototype.sendTime = function (conexao, execTime){
+    let msg = 'resp' + execTime.toString(); 
+    this.sender(conexao, msg);
+}
 
 util.inherits(SocketClient, EventEmitter)
 
 module.exports = SocketClient;
-

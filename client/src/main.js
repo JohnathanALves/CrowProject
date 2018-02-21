@@ -1,20 +1,41 @@
-
-
 var PORT = 6024;
 var Sm = require('./socketClient.js');
-var socketClient = new Sm(PORT) // quando o objeto é criado automaticamente entra em listen até receber resposta do servidor
+var socketClient = new Sm(PORT);
+// quando o objeto é criado automaticamente entra em listen até receber resposta do servidor
 
-socketClient.on('FoundServer', function(server){
+socketClient.on('FoundServer', function (server) {
     //console.log('IP: '+ server.ip);
 
     // listener para TCP deve ser ativado aqui
-    socketClient.listener(PORT);
+    socketClient.listener(PORT, function(conexao){
+    //    setInterval(function(){
+    //        socketClient.sendTime(conexao, 32.5);
+    //    }, 2000);
+       
+        socketClient.on('execute', function(comando){
+            // aqui que entra o consumidor de tempo! a vairavel comando tem o exato comando enviado do servidor
+            let initExecTime, diff;
+            let NS_PER_SEC = 1e9;
+            const exec = require('child_process').exec;
 
-    // eventos  devem ser registrados depois de encontrado o servidor
+            //inicia a contagem do tempo total
+            initExecTime = process.hrtime();
+            // Executa um comando que está dentro da variável no client
+            exec(comando, (e, stdout, stderr) => {
+                if (e instanceof Error) {
+                    console.error(e);
+                    throw e;
+                }
+                const diff = process.hrtime(initExecTime);
 
-    socketClient.on('execute',  function(msg){ // evento é disparado ao receber mensagem para executar
-        // msg contem a mesagem enviada do servidor..
-        console.log('resposta do execute: ' + msg);
-    }); 
+                let totalExecTime = diff[0] * NS_PER_SEC + diff[1];
+
+                console.log('stdout ', stdout);
+                console.log('stderr ', stderr);
+
+                // retorna o tempo de execucao para o servidor
+                socketClient.sendTime(conexao, totalExecTime);   
+            });
+        });    
+    });
 });
-
