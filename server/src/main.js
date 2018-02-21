@@ -1,7 +1,6 @@
-// var ifaces = os.networkInterfaces();
-// const {
-//     fork
-// } = require('child_process');
+const {
+    fork
+} = require('child_process');
 
 
 
@@ -28,32 +27,38 @@ socketMan.findClients(PORT, timeout, function (err, clients) { // clients é a l
 
     clients.forEach(client_addr => {
 
+        
         //cria o processo filho para o endereço atual
-        // const forked = fork('./src/messenger.js');
+        const forked = fork('./src/messenger.js');
 
-        // forked.on('message', (msg) => {
-        //     // console.log('Message from child:', msg);
-        //     if (msg === 'end') {
-        //         forked.kill('SIGINT');
-        //         if (forked.killed) {
-        //             console.log('Child process with PID ' + forked.pid + ' received the kill message.');
-        //         };
-        //     };
-        // });
+        forked.on('message', (msg) => {
+            let dados = JSON.parse(msg);
+            if (dados.type === 'end') {
+                
 
-        // forked.send({
-        //     addr: client_addr,
-        //     port: PORT
-        // });
+                console.log(dados);
+                // esron guardar os dados aqui
 
-        socketMan.AbreConexao(client_addr, PORT, function(conexao){
-            socketMan.sendExecute(conexao, 'comandoxyz');
-        }); // a funcao send envia uma mensagem do tipo Execute para o cliente
-
-        socketMan.on('response', function(valor){
-            console.log('evento!');
-            console.log(valor);
+                forked.kill('SIGINT');
+                if (forked.killed) {
+                    console.log('Child process with PID ' + forked.pid + ' received the kill message.');
+                };
+            };
         });
+
+        forked.send({
+            addr: client_addr,
+            port: PORT
+        });
+
+        // socketMan.Connect(client_addr, PORT, function(conexao){
+        //     socketMan.sendExecute(conexao, 'comandoxyz');
+        // }); // a funcao send envia uma mensagem do tipo Execute para o cliente
+
+        // socketMan.on('response', function(valor){
+        //     console.log('evento!');
+        //     console.log(valor);
+        // });
     });
 
 });

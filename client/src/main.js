@@ -8,14 +8,34 @@ socketClient.on('FoundServer', function (server) {
 
     // listener para TCP deve ser ativado aqui
     socketClient.listener(PORT, function(conexao){
-       setInterval(function(){
-           socketClient.sendTime(conexao, 32.5);
-       }, 2000);
+    //    setInterval(function(){
+    //        socketClient.sendTime(conexao, 32.5);
+    //    }, 2000);
        
         socketClient.on('execute', function(comando){
-        // aqui que entra o consumidor de tempo! a vairavel comando tem o exato comando enviado do servidor
+            // aqui que entra o consumidor de tempo! a vairavel comando tem o exato comando enviado do servidor
+            let initExecTime, diff;
+            let NS_PER_SEC = 1e9;
+            const exec = require('child_process').exec;
 
-        console.log('comando: '+ comando);
-        });
-    });    
+            //inicia a contagem do tempo total
+            initExecTime = process.hrtime();
+            // Executa um comando que está dentro da variável no client
+            exec(comando, (e, stdout, stderr) => {
+                if (e instanceof Error) {
+                    console.error(e);
+                    throw e;
+                }
+                const diff = process.hrtime(initExecTime);
+
+                let totalExecTime = diff[0] * NS_PER_SEC + diff[1];
+
+                console.log('stdout ', stdout);
+                console.log('stderr ', stderr);
+
+                // retorna o tempo de execucao para o servidor
+                socketClient.sendTime(conexao, totalExecTime);   
+            });
+        });    
+    });
 });

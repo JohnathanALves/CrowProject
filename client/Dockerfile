@@ -1,7 +1,7 @@
 FROM node:latest
 
 # Install dependencies
-WORKDIR /app
+WORKDIR /app/src
 
 ADD package.json /app
 

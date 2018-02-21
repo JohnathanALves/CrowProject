@@ -71,7 +71,7 @@ SocketMan.prototype.findClients = function (port, timeout, callback) {
 
 }
 
-SocketMan.prototype.AbreConexao = function (client, port, callback) {
+SocketMan.prototype.Connect = function (client, port, callback) {
     var net = require('net');
 
     EventEmitter.call(this);
@@ -123,7 +123,7 @@ SocketMan.prototype.AbreConexao = function (client, port, callback) {
         // process.send('end');
     });
     client.on('end', function () {
-        console.log('disconnected from server');
+        console.log('disconnected from client');
     });
 
     client.on('error', function(){
@@ -133,9 +133,8 @@ SocketMan.prototype.AbreConexao = function (client, port, callback) {
 }
 
 SocketMan.prototype.sender = function (socket, message) {
-    let msg = message.toString();
-    socket.write(msg, function(){
-        console.log('msg: '+ msg + ' enviada!');
+    socket.write(message, function(){
+        console.log('msg: '+ message + ' enviada!');
     });
     
 }
