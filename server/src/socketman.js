@@ -102,8 +102,12 @@ SocketMan.prototype.Connect = function (client, port, callback) {
         // console.log('msg: ' + data.toString());
 
         if (head == 'resp') {
-            let value = parseFloat(msg);
-            that.emit('response', value);
+            if(msg == 'error'){
+                that.emit('client-error');
+            } else {
+                let value = parseFloat(msg);
+                that.emit('response', value);
+            }
         }
 
         // if (msg.includes('Execute:'))

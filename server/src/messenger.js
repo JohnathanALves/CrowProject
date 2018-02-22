@@ -12,8 +12,6 @@ var consumeTime = function (params) {
 
     var socketMan = new sm();
     socketMan.Connect(params.addr, params.port, function(conexao){
-        
-
         //variaveis de tempo
         let initTotalTime, diff;
         let NS_PER_SEC = 1e9;
@@ -33,6 +31,10 @@ var consumeTime = function (params) {
             conexao.end(); // encerra a conexao
             let message = {'type': 'end' ,'execTime' : valor, 'totalTime': totalTime, 'comando': COMANDO};
             process.send(JSON.stringify(message));
+        });
+
+        socketMan.on('client-error', function(){
+            console.log ('Erro no cliente: ' + params.addr + '!');
         });
     }); 
 };

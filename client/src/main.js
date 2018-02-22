@@ -21,10 +21,11 @@ socketClient.on('FoundServer', function (server) {
             //inicia a contagem do tempo total
             initExecTime = process.hrtime();
             // Executa um comando que está dentro da variável no client
+
             exec(comando, (e, stdout, stderr) => {
                 if (e instanceof Error) {
                     console.error(e);
-                    throw e;
+                    socketClient.sendTime(conexao, 'error'); // envia sinal de erro em caso de nao execucao do comando
                 }
                 const diff = process.hrtime(initExecTime);
 
@@ -35,7 +36,7 @@ socketClient.on('FoundServer', function (server) {
 
                 // retorna o tempo de execucao para o servidor
                 socketClient.sendTime(conexao, totalExecTime);   
-            });
+            });                
         });    
     });
 });
