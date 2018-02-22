@@ -34,9 +34,11 @@ socketMan.findClients(PORT, timeout, function (err, clients) { // clients é a l
         forked.on('message', (msg) => {
             let dados = JSON.parse(msg);
             if (dados.type === 'end') {
+                let execTime    = dados.execTime;                   // tempo de execução (vem do cliente)
+                let totalTime   = dados.totalTime;                  // tempo total de execução (calculado na thread do servidor)
+                let netTime     = (totalTime - execTime) / 2;       // tempo de rede
+                let comando     = dados.comando;                    // comando enviado para ser executado pelo cliente.
                 
-
-                console.log(dados);
                 // esron guardar os dados aqui
 
                 forked.kill('SIGINT');
