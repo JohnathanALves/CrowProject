@@ -18,8 +18,8 @@ app.on('window-all-closed', function() {
 app.on('ready', function() {
   // Create the browser window.
   mainWindow = new BrowserWindow({
-    width: 960,
-    height: 720,
+    width: 550,
+    height: 200,
     'min-width': 480,
     'min-height': 360,
     'accept-first-mouse': true,
@@ -29,7 +29,7 @@ app.on('ready', function() {
   });
 
   // and load the index.html of the app.
-  
+
   mainWindow.loadURL('file://' + __dirname + '/index.html');
 
   // Open the DevTools.

@@ -2,7 +2,7 @@
 <html>
   <head>
     <title>The Crow - v1.0.0 - Server Version</title>
-
+    <meta charset="UTF-8">
     <!-- Stylesheets -->
     <link rel="stylesheet" href="./css/photon.css">
 
@@ -11,24 +11,20 @@
   </head>
   <body>
     <div class="window">
-
       <!-- Your app's content goes inside .window-content -->
       <div class="window-content">
-        <div class="pane-group">
-          <div class="pane pane-sm sidebar">
-            <nav class="nav-group">
-              <div> 
-                  <h1 class="nav-group-title" align="center">Clientes
-                  <span class="icon icon-cw" align="right" style="padding-left: 50px"></span>
-                  </h1>
-                  
-              </div>
-              <span class="nav-group-item">
-                <span class="icon icon-home"></span>
-                connors
-              </span>
-            </nav>
-          </div>
+        <div class="pane-group padded-more">
+            <div class="pane">
+                <form class="send-comand">
+                    <div class="form-group">
+                        <label>Comando</label>
+                        <input type="email" class="form-control" placeholder="comando [opções] arquivo">
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-form btn-primary">Enviar</button>
+                    </div>
+                </form>
+            </div>
         </div>
       </div>
     </div>
