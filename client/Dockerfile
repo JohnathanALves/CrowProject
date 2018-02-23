@@ -17,4 +17,4 @@ VOLUME /app/src
 EXPOSE 6024
 
 # Start the app
-CMD npm start
+CMD npm test

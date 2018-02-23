@@ -4,8 +4,8 @@
   "description": "",
   "main": "main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon -L ./src/main.js"
+    "test": "nodemon -L ./src/main.js",
+    "start": "node ./src/main.js"
   },
   "author": "",
   "license": "ISC",
