@@ -5,9 +5,6 @@
     <meta charset="UTF-8">
     <!-- Stylesheets -->
     <link rel="stylesheet" href="./css/photon.css">
-
-    <!-- Javascript -->
-    <script src="js/menu.js" charset="utf-8"></script>
   </head>
   <body>
     <div class="window">
@@ -15,18 +12,20 @@
       <div class="window-content">
         <div class="pane-group padded-more">
             <div class="pane">
-                <form class="send-comand">
+                <form id="send-comand">
                     <div class="form-group">
                         <label>Comando</label>
                         <input type="email" class="form-control" placeholder="comando [opções] arquivo">
                     </div>
                     <div class="form-actions">
-                        <button type="submit" class="btn btn-form btn-primary">Enviar</button>
+                        <button id="cancelBtn" class="btn btn-default">Cancelar</button>
+                        <button id="sendCommandBtn" type="submit" class="btn btn-form btn-primary">Enviar</button>
                     </div>
                 </form>
             </div>
         </div>
       </div>
     </div>
+    <script src="index.js"></script>
   </body>
 </html>
