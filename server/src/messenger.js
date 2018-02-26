@@ -1,7 +1,7 @@
 var sm = require('./socketman.js');
 
 
-var COMANDO = 'node' + ' ' +  './src/' + 'consumerTest.js';
+// var COMANDO = 'node' + ' ' +  './src/' + 'consumerTest.js';
 
 
 process.on('message', (msg) => {
@@ -19,7 +19,7 @@ var consumeTime = function (params) {
         //inicia a contagem do tempo total
         initTotalTime = process.hrtime();
 
-        socketMan.sendExecute(conexao, COMANDO);// envia uma mensagem do tipo Execute para o cliente
+        socketMan.sendExecute(conexao, params.command);// envia uma mensagem do tipo Execute para o cliente
         
         socketMan.on('response', function(valor){
             //finaliza a contagem do tempo total
@@ -29,7 +29,7 @@ var consumeTime = function (params) {
             console.log('Recebeu resposta de: '+ params.addr + ' valor: ' + valor);
             
             conexao.end(); // encerra a conexao
-            let message = {'type': 'end' ,'execTime' : valor, 'totalTime': totalTime, 'comando': COMANDO};
+            let message = {'type': 'end' ,'execTime' : valor, 'totalTime': totalTime, 'comando': params.command};
             process.send(JSON.stringify(message));
         });
 
