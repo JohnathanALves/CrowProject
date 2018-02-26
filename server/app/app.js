@@ -18,14 +18,9 @@ app.on('window-all-closed', function() {
 app.on('ready', function() {
   // Create the browser window.
   mainWindow = new BrowserWindow({
-    width: 550,
+    width: 720,
     height: 200,
-    'min-width': 480,
-    'min-height': 360,
-    'accept-first-mouse': true,
-    'title-bar-style': 'hidden',
     frame: false,
-    title: 'The Crow Project'
   });
 
   // and load the index.html of the app.
@@ -33,7 +28,7 @@ app.on('ready', function() {
   mainWindow.loadURL('file://' + __dirname + '/src/index.html');
 
   // Open the DevTools.
-  //mainWindow.openDevTools();
+  mainWindow.openDevTools();
 
   // Emitted when the window is closed.
   mainWindow.on('closed', function() {
