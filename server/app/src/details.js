@@ -405,11 +405,7 @@ var experimentos = [
 var id = '';
 
 ipcRenderer.on('store-data', (event, message) => {
-    //console.log(message);
-    // console.log($('#data h2').length);
     id = message.id;
-    // $('#data h2').text(message.id);
-
 
     for (var i = 0; i < experimentos.length; i++) {
         if (experimentos[i]._id === id) {
