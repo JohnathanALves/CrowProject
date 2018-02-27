@@ -37,41 +37,43 @@ const dbConfigured = false; //flag de database configurada
 cancelBtn.addEventListener('click', function (ev) {
     var window = remote.getCurrentWindow();
     window.close()
-})
+});
 
 // Botão de conectar à base de dados
 connectToDb.addEventListener('click', function (ev) {
+    ev.preventDefault();
+    
     var form = $("#dbForm");
+    $('#notConnected').hide();
+    $('#connected').hide();
 
     if (form[0].checkValidity() === true) { //valida o ip de acordo com o pattern lá no html
-        $('#notConnected').hide();
-        $('#connected').hide();
 
         $('#loadingModal').modal({ backdrop: 'static', keyboard: false }); //mostra o loading
         // Conecta ao banco
         let db_ip = document.getElementById('dbIp').value;
         mongoose.connect('mongodb://' + db_ip + '/crow-project-db');
-        
         var db = mongoose.connection;
-        
+
         //Exibe os erros
         db.on('error', function (err) {
+            console.log('aqui');
             $('#loadingModal').modal('hide'); //esconde o loading
             $('#notConnected p').text("Erro: " + err.message);
-            for (var i = 0; i < 2; i++) {
-                setTimeout(function () {
-                    $('#notConnected').toggleClass("animated fadeInRight");
-                }, 1000 * i);
-            $('#notConnected').show();
-            console.log(err);
-            };
+            // for (var i = 0; i < 2; i++) {
+            //     setTimeout(function () {
+            //         $('#notConnected').toggleClass("animated fadeInRight");
+            //     }, 1000 * i);
+                $('#notConnected').show();
+                console.log(err);
+            // };
         });
         db.once('open', function () {
             dbConfigured = true; //seta a flag de db configurada
             $('#loadingModal').modal('hide'); //esconde o loading
             $("#cmdFieldset").prop('disabled', false); //permite a inserção do comando
             $('#dbConnected').hide(); //esconde a mensagem de conexão necessária
-            $('#connected p').text('Conectado ao servidor MongoDB: ' + db_ip); 
+            $('#connected p').text('Conectado ao servidor MongoDB: ' + db_ip);
             $('#connected').show(); //exibe a mensagem de db conectado 
             console.log('Conectado ao servidor MongoDB: ' + db_ip);
         });
