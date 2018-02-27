@@ -42,7 +42,7 @@ cancelBtn.addEventListener('click', function (ev) {
 // Botão de conectar à base de dados
 connectToDb.addEventListener('click', function (ev) {
     ev.preventDefault();
-    
+
     var form = $("#dbForm");
     $('#notConnected').hide();
     $('#connected').hide();
@@ -60,13 +60,13 @@ connectToDb.addEventListener('click', function (ev) {
             console.log('aqui');
             $('#loadingModal').modal('hide'); //esconde o loading
             $('#notConnected p').text("Erro: " + err.message);
-            // for (var i = 0; i < 2; i++) {
-            //     setTimeout(function () {
-            //         $('#notConnected').toggleClass("animated fadeInRight");
-            //     }, 1000 * i);
+            for (var i = 0; i < 2; i++) {
+                setTimeout(function () {
+                    $('#notConnected').toggleClass("animated fadeInRight");
+                }, 1000 * i);
                 $('#notConnected').show();
                 console.log(err);
-            // };
+            };
         });
         db.once('open', function () {
             dbConfigured = true; //seta a flag de db configurada
