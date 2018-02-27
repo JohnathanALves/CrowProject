@@ -6,5 +6,13 @@
   "author": "Connor Sears",
   "scripts": {
     "start": "electron ."
+  },
+  "dependencies": {
+    "bootstrap": "^4.0.0",
+    "datatables.net": "^1.10.16",
+    "datatables.net-bs4": "^1.10.16",
+    "jquery": "^3.3.1",
+    "popper.js": "^1.12.9",
+    "propper": "^1.0.3"
   }
 }
