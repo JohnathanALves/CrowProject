@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Crow - Detalhes</title>
+    <link rel="stylesheet" href="..\node_modules\bootstrap\dist\css\bootstrap.min.css">
+    <link rel="stylesheet" href="..\node_modules\datatables.net-bs4\css\dataTables.bootstrap4.css">
+    <link rel="stylesheet" href="..\assets\css\app.css">
+
+    <style>
+        .top-buffer {
+            margin-top: 1em;
+        }
+
+        .table-top {
+            margin-top: 2em;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="card top-buffer">
+            <h1 id="exp" class="card-header display-4">Experimento</h1>
+            <div class="card-body">
+                <!-- Output -->
+                <h5 id="command"></h4>
+                <h5 id="repeat"></h4>
+                <hr>
+                <div class="row justify-content-center">
+                    <table id="detail" class="table table-hover table-sm" cellspacing="0" width="100%"></table>
+                </div>
+            </div>
+            <div class="card-footer text-muted text-center">
+                <a id="close" href="javascript:window.close()">Fechar</a>
+            </div>
+        </div>
+
+        <!-- Form -->
+        <!-- <div class="row top-buffer">
+            <div class="col-lg-6 mx-auto">
+            <div class="input-group">
+              <input id="computerName" type="text" class="form-control" placeholder="Computer Name">
+              <span class="input-group-btn">
+                <button id="getDisk" class="btn btn-primary" type="button">Get Disk Info!</button>
+              </span>
+            </div>
+            </div>
+          </div> -->
+
+        <!-- Output -->
+
+
+
+
+    </div>
+</body>
+<!-- <body>
+    <div id="data">
+        <h2>Hello World!</h2>
+        <a id="close" href="javascript:window.close()">Close this Window</a>
+    </div>
+</body> -->
+<script>
+    require('./details.js')
+</script>
+
+</html>

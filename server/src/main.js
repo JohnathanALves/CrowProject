@@ -40,6 +40,7 @@ socketMan.findClients(PORT, timeout, function (err, clients) { // clients é a l
                 let comando     = dados.comando;                    // comando enviado para ser executado pelo cliente.
                 
                 // esron guardar os dados aqui
+                console.log(dados);
 
                 forked.kill('SIGINT');
                 if (forked.killed) {

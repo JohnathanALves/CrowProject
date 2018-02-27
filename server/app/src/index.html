@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>The Crow - v1.0.0 - Server Version</title>
+  <link rel="stylesheet" href="..\node_modules\bootstrap\dist\css\bootstrap.min.css">
+  <link rel="stylesheet" href="..\node_modules\datatables.net-bs4\css\dataTables.bootstrap4.css">
+  <link rel="stylesheet" href="..\assets\css\animate.css">
+  <link rel="stylesheet" href="..\assets\css\app.css">
+</head>
+
+<body>
+  <!-- Definição da NavBar -->
+  <nav class="navbar navbar-dark bg-dark justify-content-between">
+    <a class="navbar-brand" href="#">
+      <img src="../assets/img/logo.png" width="30" height="30" class="d-inline-block align-top" alt=""> The Crow
+    </a>
+    <button id="cancelBtn" class="btn btn-sm btn-outline-danger">Sair</button>
+
+  </nav>
+  <!-- Definição das NAVS Tab -->
+  <nav class="nav-fill top-buffer">
+    <div class="nav nav-tabs" id="nav-tab" role="tablist">
+      <a class="nav-item nav-link active" id="nav-exp-tab" data-toggle="tab" href="#nav-exp" role="tab" aria-controls="nav-exp"
+        aria-selected="true">Experimento</a>
+      <a class="nav-item nav-link" id="nav-data-tab" data-toggle="tab" href="#nav-data" role="tab" aria-controls="nav-data" aria-selected="false">Dados</a>
+      <a class="nav-item nav-link" id="nav-config-tab" data-toggle="tab" href="#nav-config" role="tab" aria-controls="nav-config"
+        aria-selected="false">Configuração</a>
+    </div>
+  </nav>
+
+  <div class="container">
+    <!-- Conteúdo das NAVS -->
+    <div class="tab-content" id="nav-tabContent">
+      <!-- Conteúdo da Nav de experimento -->
+      <div class="tab-pane fade show active" id="nav-exp" role="tabpanel" aria-labelledby="nav-exp-tab">
+        <div class="card top-buffer">
+          <div class="card-body">
+            <div id="dbConnected" class="alert alert-warning text-center animated pulse" style="display:block" role="alert">
+              Antes de iniciar um experimento conecte-me à base de dados na aba "Configuração".
+            </div>
+            <form id="cmdForm" novalidate>
+              <fieldset id="cmdFieldset" disabled>
+                <div class="form-group">
+                  <label for="commandInput">Comando</label>
+                  <input id="commandInput" type="text" class="form-control" placeholder='Ex.: "comando [opções] caminho\para\o\arquivo"' required>
+                  <div class="invalid-feedback">
+                    Por favor, insira um comando.
+                  </div>
+                </div>
+                <button id="sendCommandBtn" type="submit" class="btn btn-dark">Enviar</button>
+              </fieldset>
+            </form>
+          </div>
+        </div>
+      </div>
+      <!-- Conteúdo da Nav de dados -->
+      <div class="tab-pane fade" id="nav-data" role="tabpanel" aria-labelledby="nav-data-tab">
+        <!-- Output -->
+        <div class="card top-buffer">
+          <h1 class="card-header display-4 text-center">Experimentos Realizados</h1>
+          <div class="card-body">
+            <!-- Output -->
+            <div class="row justify-content-center table-top">
+              <table id="output" class="table table-hover table-sm" cellspacing="0" width="100%"></table>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Conteúdo da Nav de configuração -->
+      <div class="tab-pane fade" id="nav-config" role="tabpanel" aria-labelledby="nav-config-tab">
+        <div class="card top-buffer">
+          <div class="card-body">
+
+            <div id="connected" class="alert alert-success alert-dismissible fade show" role="alert">
+              <p class="text-justify">Conectado com sucesso!</p>
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div id="notConnected" class="alert alert-danger alert-dismissible fade show" role="alert">
+              <p class="text-justify">Erro!</p>
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+
+            <form id="dbForm" novalidate>
+              <div class="form-group">
+                <label for="dbIp">IP do servidor de Banco de Dados</label>
+                <input id="dbIp" type="text" class="form-control" placeholder="Ex.: 10.0.0.1" required pattern="((^|\.)((25[0-5])|(2[0-4]\d)|(1\d\d)|([1-9]?\d))){4}$">
+                <div class="invalid-feedback">
+                  Por favor, insira um endereço de IP válido.
+                </div>
+              </div>
+              <button id="connectToDb" class="btn btn-dark">Conectar</button>
+              <!-- <span id="isConnectedIcon" class="icon icon-record"></span> -->
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal fade" id="loadingModal" tabindex="-1" role="dialog" aria-labelledby="loadingModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+      <div class="modal-content">
+        <div class="modal-body text-center">
+          <!-- <div class="loader"></div> -->
+          <div class="lds-roller">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+<script>window.$ = window.jQuery = require('../node_modules/jquery/dist/jquery.min');</script>
+
+<script src="../node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+
+<script>require('./index.js')</script>
+
+</html>

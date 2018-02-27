@@ -1,2 +1,5 @@
 */node_modules/
 *.log
+
+*/node_modules/*
+/server/app/node_modules/*

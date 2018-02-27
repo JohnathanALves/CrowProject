@@ -132,7 +132,6 @@ SocketMan.prototype.Connect = function (client, port, callback) {
 
     client.on('error', function(){
         console.log('Socket Error!');
-        connection.close();
     });
 }
 
