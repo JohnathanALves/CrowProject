@@ -15,9 +15,7 @@ window.Bootstrap = require('bootstrap');
 const sm = require('../../src/socketman.js');
 var socketMan = new sm('192.168.100.6', '192.168.100.255');
 
-const {
-    fork
-} = require('child_process');
+const { fork } = require('child_process');
 
 const Result = require('../../src/result.js');
 
@@ -28,10 +26,15 @@ const cancelBtn = document.getElementById('cancelBtn');
 const sendCommandBtn = document.getElementById('sendCommandBtn');
 const connetToDb = document.getElementById('connetToDb');
 
-
 const path = require('path');
 
-const dbConfigured = false; //flag de database configurada
+const EventEmitter = require('events');
+
+class MyEmitter extends EventEmitter { }
+const tableEmitter = new MyEmitter()
+
+var dbConfigured = false; //flag de database configurada
+var data = [];
 
 // Botão de sair da aplicação
 cancelBtn.addEventListener('click', function (ev) {
@@ -44,8 +47,7 @@ connectToDb.addEventListener('click', function (ev) {
     ev.preventDefault();
 
     var form = $("#dbForm");
-    $('#notConnected').hide();
-    $('#connected').hide();
+    $('#dbAlert').hide();
 
     if (form[0].checkValidity() === true) { //valida o ip de acordo com o pattern lá no html
 
@@ -57,30 +59,29 @@ connectToDb.addEventListener('click', function (ev) {
 
         //Exibe os erros
         db.on('error', function (err) {
-            console.log('aqui');
-            $('#loadingModal').modal('hide'); //esconde o loading
-            $('#notConnected p').text("Erro: " + err.message);
-            for (var i = 0; i < 2; i++) {
-                setTimeout(function () {
-                    $('#notConnected').toggleClass("animated fadeInRight");
-                }, 1000 * i);
-                $('#notConnected').show();
-                console.log(err);
-            };
+            dbConfigured = false;
+            $('#dbAlert p').text("Erro: " + err.message);
+            $("#cmdFieldset").prop('disabled', true);
+            $('.dbConnected').show();
+            animateAlert('#dbAlert', 'alert-danger', 'alert-success');
+            $('#output').hide();
+            console.log(err);
         });
         db.once('open', function () {
             dbConfigured = true; //seta a flag de db configurada
-            $('#loadingModal').modal('hide'); //esconde o loading
-            $("#cmdFieldset").prop('disabled', false); //permite a inserção do comando
-            $('#dbConnected').hide(); //esconde a mensagem de conexão necessária
-            $('#connected p').text('Conectado ao servidor MongoDB: ' + db_ip);
-            $('#connected').show(); //exibe a mensagem de db conectado 
-            console.log('Conectado ao servidor MongoDB: ' + db_ip);
+            setTimeout(() => {
+                getData();
+                $('.dbConnected').hide(); //esconde a mensagem de conexão necessária
+                $("#cmdFieldset").prop('disabled', false); //permite a inserção dos comandos
+                $('#dbAlert p').text('Conectado ao servidor MongoDB: ' + db_ip + '. Você já pode realizar seus experimentos ou visualizar os dados.');
+                animateAlert('#dbAlert', 'alert-success', 'alert-danger');
+            }, 1000);
+
         });
 
     }
     else {
-        ev.preventDefault();
+        //ev.preventDefault();
         ev.stopPropagation(); //evita o submit caso o ip não seja validado
     };
 
@@ -151,81 +152,65 @@ sendCommandBtn.addEventListener('click', function (ev) {
     };
 });
 
-var data = [
-    {
-        "id": "5a91857fe43f6908fd903675",
-        "comando": "mollit",
-        "repeticoes": "10",
-        "tempoTotal": "60",
-        "tempoRede": "10",
-        "tempoServico": "50"
-    },
-    {
-        "id": "5a91857fa691d60f498472cf",
-        "comando": "consequat",
-        "repeticoes": "10",
-        "tempoTotal": "90",
-        "tempoRede": "5",
-        "tempoServico": "85"
-    }
-]
 
-$('#output').DataTable({
-    language: {
-        "url": "../locale/Portuguese-Brasil.json"
-    },
-    destroy: true,
-    responsive: true,
-    data: data,
-    columns: [
-        {
-            data: 'id',
-            title: 'ID'
+tableEmitter.on("dataReady", () => {
+    $('#output').DataTable({
+        language: {
+            "url": "../locale/Portuguese-Brasil.json"
         },
-        {
-            data: 'comando',
-            title: 'Comando'
-        },
-        {
-            data: 'repeticoes',
-            title: 'Repetições'
-        },
-        {
-            data: 'tempoTotal',
-            title: 'Tempo Total'
-        },
-        {
-            data: 'tempoRede',
-            title: 'Tempo de Rede'
-        },
-        {
-            data: 'tempoServico',
-            title: 'Tempo de Serviço'
-        },
-        {
-            data: null,
-            //title: 'Detalhes'
-        },
-    ],
-    columnDefs: [{
-        targets: -1,
-        defaultContent: "<button class='btn btn-outline-info btn-sm'>Detalhes</button>", //Adiciona o botão de detalhe a cada linha da tabela
-        orderable: false
-    }]
+        destroy: true,
+        responsive: true,
+        data: data,
+        columns: [
+            {
+                data: 'id',
+                title: 'ID'
+            },
+            {
+                data: 'comando',
+                title: 'Comando'
+            },
+            {
+                data: 'repeticoes',
+                title: 'Repetições'
+            },
+            {
+                data: 'tempoTotal',
+                title: 'Tempo Total'
+            },
+            {
+                data: 'tempoRede',
+                title: 'Tempo de Rede'
+            },
+            {
+                data: 'tempoServico',
+                title: 'Tempo de Serviço'
+            },
+            {
+                data: null,
+                //title: 'Detalhes'
+            },
+        ],
+        columnDefs: [{
+            targets: -1,
+            defaultContent: "<button class='btn btn-outline-info btn-sm'>Detalhes</button>", //Adiciona o botão de detalhe a cada linha da tabela
+            orderable: false
+        }]
+    });
+
+    // Pinta o header da tabela
+    var table = $('#output').DataTable();
+    table.tables().header().to$().addClass('thead-light');
+
+    // Adiciona a ação ao botão de detalhes
+    $('#output tbody').on('click', 'button', function () {
+        var data = table.row($(this).parents('tr')).data();
+        console.log(data.id);
+
+        createDetailWindow(data);
+    });
+
 });
-
-// Pinta o header da tabela
-var table = $('#output').DataTable();
-table.tables().header().to$().addClass('thead-light');
-
-// Adiciona a ação ao botão de detalhes
-$('#output tbody').on('click', 'button', function () {
-    var data = table.row($(this).parents('tr')).data();
-    console.log(data.id);
-
-    createDetailWindow(data);
-});
-
 // Cria a janela de detalhes quando o botão é clicado
 function createDetailWindow(data) {
     const modalPath = path.join('file://', __dirname, 'details.html')
@@ -240,4 +225,22 @@ function createDetailWindow(data) {
     win.once('ready-to-show', () => {
         win.show();
     });
+};
+
+function animateAlert(idAlert, newClass, oldClass) {
+    $('#loadingModal').modal('hide'); //esconde o loading
+    $(idAlert).removeClass(oldClass);
+    $(idAlert).addClass(newClass);
+    $(idAlert).show();
+};
+
+function getData() {
+    if (dbConfigured) {
+        Result.find().exec(function (err, gettedData) {
+            if (err) return handleError(err);
+            data = gettedData;
+            console.log(data);
+            tableEmitter.emit('dataReady');
+        });
+    }
 };
