@@ -1,15 +1,14 @@
 var sm = require('./socketman.js');
 
-
-var COMANDO = 'node' + ' ' +  './src/' + 'consumerTest.js';
-
-
 process.on('message', (msg) => {
     consumeTime(msg);
 });
 
 var consumeTime = function (params) {
-
+    
+    var comando = params.comando;
+    var loop = params.loop;
+    
     var socketMan = new sm();
     socketMan.Connect(params.addr, params.port, function(conexao){
         //variaveis de tempo
@@ -19,8 +18,7 @@ var consumeTime = function (params) {
         //inicia a contagem do tempo total
         initTotalTime = process.hrtime();
 
-        let repeticoes = 3;
-        socketMan.sendExecute(conexao, COMANDO, repeticoes);// envia uma mensagem contendo 
+        socketMan.sendExecute(conexao, comando, loop);// envia uma mensagem contendo 
         
         socketMan.on('response', function(valor){
             //finaliza a contagem do tempo total
@@ -31,7 +29,19 @@ var consumeTime = function (params) {
             
             conexao.end(); // encerra a conexao
             
-            let message = {'type': 'end' ,'execTime' : valor, 'totalTime': totalTime, 'comando': COMANDO};
+            var CTotalTime = 0;
+            for (let i = 0; i < loop; i++){
+                CTotalTime += valor[i];
+            }
+
+            let message = {
+                'type': 'end',
+                'execTimes' : valor, 
+                'totalTime': totalTime, 
+                'netTime': ((totalTime - CTotalTime)/loop), 
+                'comando': comando
+            };
+
             process.send(JSON.stringify(message));
         });
 

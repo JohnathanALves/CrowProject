@@ -19,6 +19,10 @@ var socketMan = new sm();
 var PORT = 6024;
 var timeout = 5000;
 
+var COMANDO = 'node' + ' ' +  './src/' + 'consumerTest.js';
+
+var LOOP_NUM = 10;
+
 socketMan.findClients(PORT, timeout, function (err, clients) { // clients é a lista de ip dos clientes..
     if (err) {
         return console.log('erro!');
@@ -34,9 +38,13 @@ socketMan.findClients(PORT, timeout, function (err, clients) { // clients é a l
         forked.on('message', (msg) => {
             let dados = JSON.parse(msg);
             if (dados.type === 'end') {
-                let execTime    = dados.execTime;                   // tempo de execução (vem do cliente)
+                console.log(dados);
+                let execTimes    = dados.execTime;                   // array de tempos de execução dos clientes
+                
                 let totalTime   = dados.totalTime;                  // tempo total de execução (calculado na thread do servidor)
-                let netTime     = (totalTime - execTime) / 2;       // tempo de rede
+                
+                let netTime     = dados.netTime;       // tempo de rede
+                
                 let comando     = dados.comando;                    // comando enviado para ser executado pelo cliente.
                 
                 // esron guardar os dados aqui
@@ -50,7 +58,9 @@ socketMan.findClients(PORT, timeout, function (err, clients) { // clients é a l
 
         forked.send({
             addr: client_addr,
-            port: PORT
+            port: PORT,
+            loop: LOOP_NUM,
+            comando: COMANDO
         });
 
         // socketMan.Connect(client_addr, PORT, function(conexao){
