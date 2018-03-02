@@ -30,6 +30,7 @@ var consumeTime = function (params) {
             console.log('Recebeu resposta de: '+ params.addr + ' valor: ' + valor);
             
             conexao.end(); // encerra a conexao
+            
             let message = {'type': 'end' ,'execTime' : valor, 'totalTime': totalTime, 'comando': COMANDO};
             process.send(JSON.stringify(message));
         });
