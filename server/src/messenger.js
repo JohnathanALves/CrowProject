@@ -19,7 +19,8 @@ var consumeTime = function (params) {
         //inicia a contagem do tempo total
         initTotalTime = process.hrtime();
 
-        socketMan.sendExecute(conexao, COMANDO);// envia uma mensagem do tipo Execute para o cliente
+        let repeticoes = 3;
+        socketMan.sendExecute(conexao, COMANDO, repeticoes);// envia uma mensagem contendo 
         
         socketMan.on('response', function(valor){
             //finaliza a contagem do tempo total

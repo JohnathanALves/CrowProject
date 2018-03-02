@@ -1,6 +1,6 @@
 // emissao de eventos
-const EventEmitter = require('events')
-const util = require('util')
+const EventEmitter = require('events');
+const util = require('util');
 
 var os = require('os');
 var iputils = require('ip');
@@ -55,58 +55,19 @@ SocketClient.prototype.listener = function (port, callback) {
 
     var net = require('net');
     var server = net.createServer(function (connection) {
-        callback(connection);
+        
         console.log('Servidor Conectou-se!');
+        callback(connection);
+
 
         connection.on('data', function (data) {
-            let head = (data.toString()).slice(0, 4);
-            let msg = (data.toString()).slice(4);
-    
-
-            if (head == 'exec') {
-                that.emit('execute', msg);
+            let objeto = JSON.parse(data);
+            if(objeto.header == 'exec'){
+                that.emit('execute', {
+                    'repeticoes'    : objeto.times,
+                    'comando'       : objeto.comando
+                });
             }
-            //executa a função consumidora de tempo
-            // if (msg.includes('Execute:')) {
-            //     //variaveis de tempo
-            //     let initExecTime, diff;
-            //     let NS_PER_SEC = 1e9;
-
-            //     let command = msg.slice(8);
-
-            //     const exec = require('child_process').exec;
-
-            //     //inicia a contagem do tempo total
-            //     initExecTime = process.hrtime();
-
-            //     exec(command, (e, stdout, stderr) => {
-            //         if (e instanceof Error) {
-            //             console.error(e);
-            //             throw e;
-            //         }
-            //         console.log('stdout ', stdout);
-            //         console.log('stderr ', stderr);
-
-            //         const diff = process.hrtime(initExecTime);
-
-            //         let totalExecTime = diff[0] * NS_PER_SEC + diff[1];
-            //         // that.emit('execute', res);
-            //         connection.write(totalExecTime.toString());
-            //     });
-            //     // //calcula um numero aleatorio só pra representar o tempo de execução e testar a comunicação
-            //     // let res = ((Math.floor((Math.random() * 10) + 1)) * 1000);
-
-            //     // setTimeout(() => {
-            //     //     that.emit('execute', res);
-
-            //     //     //precisa criar a prototype.send? ou deixa assim?
-            //     //     connection.write(res.toString());
-            //     // }, res);
-
-            //     // let res = msg.slice(8);
-
-            // };
-
         });
 
         connection.on('end', function () {
@@ -117,6 +78,8 @@ SocketClient.prototype.listener = function (port, callback) {
             console.log('Socket Error!');
             connection.close();
         });
+
+        
     });
 
     server.listen(port, function () {
@@ -125,20 +88,32 @@ SocketClient.prototype.listener = function (port, callback) {
     
 }
 
-SocketClient.prototype.sender = function (conexao, message) {
-    if (conexao.destroyed){
-        console.log('Conexao encerrada!');
-        return false
-    } else {
-        conexao.write(message.toString(), function(){
-            return true;
-        });
-    }    
-}
+// SocketClient.prototype.sender = function (conexao, message) { //deprecated
+//     if (conexao.destroyed){
+//         console.log('Conexao encerrada!');
+//         return false
+//     } else {
+//         conexao.write(message.toString(), function(){
+//             return true;
+//         });
+//     }    
+// }
 
-SocketClient.prototype.sendTime = function (conexao, execTime){
-    let msg = 'resp' + execTime.toString(); 
-    this.sender(conexao, msg);
+// SocketClient.prototype.sendTime = function (conexao, execTime){ // deprecated
+//     let msg = 'resp' + execTime.toString(); 
+//     this.sender(conexao, msg);
+// }
+
+SocketClient.prototype.sendTimes = function(conexao, times){
+    let objeto = {
+        'header'    : 'resp',
+        'data'      : times      
+    };
+    console.log(objeto);
+    let msg = JSON.stringify(objeto);
+    conexao.write(msg, function(){
+        console.log('msg enviada para o servidor!');
+    });
 }
 
 util.inherits(SocketClient, EventEmitter)

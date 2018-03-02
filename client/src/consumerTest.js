@@ -3,4 +3,4 @@
 
 setTimeout(() => {
     console.log('Opaa');
-}, 10000);
+}, 1000);

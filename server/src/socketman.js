@@ -96,35 +96,12 @@ SocketMan.prototype.Connect = function (client, port, callback) {
     callback(client);
 
     client.on('data', function (data) {
-        let head = (data.toString()).slice(0, 4);
-        let msg = (data.toString()).slice(4);
+        let objeto = JSON.parse(data);
 
-        // console.log('msg: ' + data.toString());
-
-        if (head == 'resp') {
-            if(msg == 'error'){
-                that.emit('client-error');
-            } else {
-                let value = parseFloat(msg);
-                that.emit('response', value);
-            }
+        if (objeto.header == 'resp') {
+            value = objeto.data;
+            that.emit('response', value);
         }
-
-        // if (msg.includes('Execute:'))
-
-        // //finaliza a contagem do tempo total
-        // const diff = process.hrtime(initTotalTime);
-
-        // let totalTime = diff[0] * NS_PER_SEC + diff[1];
-
-        // //colocar função que salva no banco aqui
-        // console.log('tempo total: ' + totalTime + ' ns - tempo de execução: ' + data.toString() + ' ns');
-
-        // //encerra conexão com o cliente
-        // client.end();
-
-        // //encerra o processo filho
-        // process.send('end');
     });
     client.on('end', function () {
         console.log('disconnected from client');
@@ -136,16 +113,21 @@ SocketMan.prototype.Connect = function (client, port, callback) {
     });
 }
 
-SocketMan.prototype.sender = function (socket, message) {
-    socket.write(message, function(){
-        console.log('msg: '+ message + ' enviada!');
+SocketMan.prototype.sender = function (socket, objeto) {
+    let msg = JSON.stringify(objeto);
+    socket.write(msg, function(){
+        console.log('msg ' + msg + ' enviada!');
     });
     
 }
 
-SocketMan.prototype.sendExecute = function(socket, comando) {
-    let msg = 'exec' + comando.toString();
-    this.sender(socket, msg);
+SocketMan.prototype.sendExecute = function(socket, comando, repeticoes) {
+    let objeto = {
+        'header'    :   'exec',
+        'comando'   :   comando,
+        'times'     :   repeticoes   
+    }
+    this.sender(socket, objeto);
 }
 
 
