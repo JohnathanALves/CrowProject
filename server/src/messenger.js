@@ -1,5 +1,7 @@
 var sm = require('./socketman.js');
 
+// var COMANDO = 'node' + ' ' +  './src/' + 'consumerTest.js';
+
 process.on('message', (msg) => {
     consumeTime(msg);
 });
@@ -28,7 +30,7 @@ var consumeTime = function (params) {
             console.log('Recebeu resposta de: '+ params.addr + ' valor: ' + valor);
             
             conexao.end(); // encerra a conexao
-            
+                  
             var CTotalTime = 0;
             for (let i = 0; i < loop; i++){
                 CTotalTime += valor[i];

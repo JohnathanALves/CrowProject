@@ -10,6 +10,7 @@ var ifaces = os.networkInterfaces();
 function SocketClient(port, ipaddr) {
     EventEmitter.call(this);
     const that = this;
+    this._port = port;
 
     var ifaceKey = Object.keys(ifaces)[1];
     var NET_ADAPTER = ifaces[ifaceKey].pop(); //main network adapter
@@ -72,6 +73,9 @@ SocketClient.prototype.listener = function (port, callback) {
 
         connection.on('end', function () {
             console.log('Servidor Desconectou-se!');
+            this.findServer(this._port, function (servidor) {
+                that.emit('FoundServer', servidor);
+            });
         });
 
         connection.on('error', function(){
