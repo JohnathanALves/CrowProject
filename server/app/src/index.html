@@ -49,6 +49,20 @@
                     Por favor, insira um comando.
                   </div>
                 </div>
+                <div class="form-group">
+                  <label for="commandInput">Ip do Servidor</label>
+                  <input id="serverIp" type="text" class="form-control" placeholder='Ex: 10.87.43.245' required>
+                  <div class="invalid-feedback">
+                    Por favor, insira o ip da interface onde deve ocorrer o broadcast.
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="commandInput">Ip de Broadcast</label>
+                  <input id="broadcastIp" type="text" class="form-control" placeholder='Ex: 10.87.43.255"' required>
+                  <div class="invalid-feedback">
+                    Por favor, insira o ip de broadcast.
+                  </div>
+                </div>
                 <button id="sendCommandBtn" type="submit" class="btn btn-dark">Enviar</button>
               </fieldset>
             </form>

@@ -14,7 +14,6 @@ window.Bootstrap = require('bootstrap');
 
 const sm = require('../core/socketman.js');
 // var socketMan = new sm('192.168.100.6', '192.168.100.255');
-var socketMan = new sm('10.87.41.151', '10.87.43.255');
 
 const { fork } = require('child_process');
 
@@ -92,7 +91,8 @@ connectToDb.addEventListener('click', function (ev) {
 sendCommandBtn.addEventListener('click', function (ev) {
     ev.preventDefault();
     var form = $("#cmdForm");
-
+    var socketMan = new sm(document.getElementById('serverIp').value, document.getElementById('broadcastIp').value);
+    
     if (dbConfigured) {
         if (form[0].checkValidity() === true) {
             let commandInput = document.getElementById('commandInput')
