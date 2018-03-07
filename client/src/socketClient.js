@@ -73,7 +73,7 @@ SocketClient.prototype.listener = function (port, callback) {
 
         connection.on('end', function () {
             console.log('Servidor Desconectou-se!');
-            this.findServer(this._port, function (servidor) {
+            that.findServer(this._port, function (servidor) {
                 that.emit('FoundServer', servidor);
             });
         });
