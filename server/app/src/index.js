@@ -12,12 +12,13 @@ window.$ = window.jQuery = require('jquery');
 window.Popper = require('popper.js');
 window.Bootstrap = require('bootstrap');
 
-const sm = require('../../src/socketman.js');
-var socketMan = new sm('192.168.100.6', '192.168.100.255');
+const sm = require('../core/socketman.js');
+// var socketMan = new sm('192.168.100.6', '192.168.100.255');
+var socketMan = new sm('10.87.41.151', '10.87.43.255');
 
 const { fork } = require('child_process');
 
-const Result = require('../../src/result.js');
+const Result = require('../core/result.js');
 
 const PORT = 6024;
 const timeout = 5000;
@@ -89,6 +90,7 @@ connectToDb.addEventListener('click', function (ev) {
 });
 
 sendCommandBtn.addEventListener('click', function (ev) {
+    ev.preventDefault();
     var form = $("#cmdForm");
 
     if (dbConfigured) {
@@ -103,10 +105,9 @@ sendCommandBtn.addEventListener('click', function (ev) {
                 console.log(clients);
 
                 clients.forEach(client_addr => {
-
-
+                    
                     //cria o processo filho para o endereço atual
-                    const forked = fork('../../server/src/messenger.js');
+                    const forked = fork('../core/messenger.js');
 
                     forked.on('message', (msg) => {
                         let dados = JSON.parse(msg);
@@ -144,7 +145,6 @@ sendCommandBtn.addEventListener('click', function (ev) {
             });
         }
         else {
-            ev.preventDefault();
             ev.stopPropagation();
         };
 

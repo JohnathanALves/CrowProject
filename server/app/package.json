@@ -13,6 +13,9 @@
     "datatables.net-bs4": "^1.10.16",
     "jquery": "^3.3.1",
     "popper.js": "^1.12.9",
-    "propper": "^1.0.3"
+    "propper": "^1.0.3",
+    "ip": "^1.1.5",
+    "mongoose": "^5.0.3",
+    "nodemon": "^1.14.12"
   }
 }
