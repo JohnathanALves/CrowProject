@@ -80,7 +80,7 @@ SocketClient.prototype.listener = function (port, callback) {
 
         connection.on('error', function(){
             console.log('Socket Error!');
-            connection.close();
+            connection.end();
         });
 
         
