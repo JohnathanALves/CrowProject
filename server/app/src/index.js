@@ -17,6 +17,9 @@ const sm = require('../core/socketman.js');
 
 const { fork } = require('child_process');
 
+//cria o processo filho para o endereço atual
+const forked = fork('./core/messenger.js');
+
 const Result = require('../core/result.js');
 
 const PORT = 6024;
@@ -106,9 +109,6 @@ sendCommandBtn.addEventListener('click', function (ev) {
 
                 clients.forEach(client_addr => {
                     
-                    //cria o processo filho para o endereço atual
-                    const forked = fork('../core/messenger.js');
-
                     forked.on('message', (msg) => {
                         let dados = JSON.parse(msg);
                         if (dados.type === 'end') {
