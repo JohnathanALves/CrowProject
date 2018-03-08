@@ -57,12 +57,12 @@ SocketClient.prototype.listener = function (port, callback) {
     var net = require('net');
     var server = net.createServer(function (connection) {
         
-        console.log('Servidor Conectou-se!');
         callback(connection);
-
 
         connection.on('data', function (data) {
             let objeto = JSON.parse(data);
+            console.log('Recebimento de daddos: ');
+            console.log(objeto.comando);
             if(objeto.header == 'exec'){
                 that.emit('execute', {
                     'repeticoes'    : objeto.times,
@@ -73,7 +73,10 @@ SocketClient.prototype.listener = function (port, callback) {
 
         connection.on('end', function () {
             console.log('Servidor Desconectou-se!');
-            that.findServer(this._port, function (servidor) {
+            console.log(port);
+            connection.end();
+            server.close();
+            that.findServer(port, function (servidor) {
                 that.emit('FoundServer', servidor);
             });
         });
@@ -81,6 +84,7 @@ SocketClient.prototype.listener = function (port, callback) {
         connection.on('error', function(){
             console.log('Socket Error!');
             connection.end();
+            server.close();
         });
 
         
@@ -92,30 +96,16 @@ SocketClient.prototype.listener = function (port, callback) {
     
 }
 
-// SocketClient.prototype.sender = function (conexao, message) { //deprecated
-//     if (conexao.destroyed){
-//         console.log('Conexao encerrada!');
-//         return false
-//     } else {
-//         conexao.write(message.toString(), function(){
-//             return true;
-//         });
-//     }    
-// }
-
-// SocketClient.prototype.sendTime = function (conexao, execTime){ // deprecated
-//     let msg = 'resp' + execTime.toString(); 
-//     this.sender(conexao, msg);
-// }
 
 SocketClient.prototype.sendTimes = function(conexao, times){
     let objeto = {
         'header'    : 'resp',
         'data'      : times      
     };
+    console.log('envio de dados');
     console.log(objeto);
     let msg = JSON.stringify(objeto);
-    conexao.write(msg, function(){
+    conexao.end(msg, function(){
         console.log('msg enviada para o servidor!');
     });
 }
