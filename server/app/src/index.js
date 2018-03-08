@@ -24,7 +24,7 @@ const timeout = 5000;
 
 const cancelBtn = document.getElementById('cancelBtn');
 const sendCommandBtn = document.getElementById('sendCommandBtn');
-const connetToDb = document.getElementById('connetToDb');
+
 
 const path = require('path');
 
@@ -96,7 +96,7 @@ sendCommandBtn.addEventListener('click', function (ev) {
     if (dbConfigured) {
         if (form[0].checkValidity() === true) {
             let commandInput = document.getElementById('commandInput')
-            let numTimes = document.getElementById('numTimes')
+            let repeatNumber = document.getElementById('repeatNumber')
 
             socketMan.findClients(PORT, timeout, function (err, clients) { // clients é a lista de ip dos clientes..
                 if (err) {
@@ -139,7 +139,8 @@ sendCommandBtn.addEventListener('click', function (ev) {
                     forked.send({
                         addr: client_addr,
                         port: PORT,
-                        command: commandInput.value
+                        comando: commandInput.value,
+                        loop: repeatNumber.value
                     });
                 });
             });

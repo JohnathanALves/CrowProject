@@ -50,15 +50,22 @@
                   </div>
                 </div>
                 <div class="form-group">
-                  <label for="commandInput">Ip do Servidor</label>
-                  <input id="serverIp" type="text" class="form-control" placeholder='Ex: 10.87.43.245' required>
+                  <label for="repeatNumber">Quantidade de Repetições</label>
+                  <input id="repeatNumber" type="number" min="1" step="1" class="form-control" placeholder='Ex.: "10"' required>
+                  <div class="invalid-feedback">
+                    Por favor, insira uma quantidade de repetições válida.
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="serverIp">Ip do Servidor</label>
+                  <input id="serverIp" type="text" class="form-control" placeholder='Ex.: "10.87.43.245"' required pattern="((^|\.)((25[0-5])|(2[0-4]\d)|(1\d\d)|([1-9]?\d))){4}$">
                   <div class="invalid-feedback">
                     Por favor, insira o ip da interface onde deve ocorrer o broadcast.
                   </div>
                 </div>
                 <div class="form-group">
-                  <label for="commandInput">Ip de Broadcast</label>
-                  <input id="broadcastIp" type="text" class="form-control" placeholder='Ex: 10.87.43.255"' required>
+                  <label for="broadcastIp">Ip de Broadcast</label>
+                  <input id="broadcastIp" type="text" class="form-control" placeholder='Ex.: "10.87.43.255"' required pattern="((^|\.)((25[0-5])|(2[0-4]\d)|(1\d\d)|([1-9]?\d))){4}$">
                   <div class="invalid-feedback">
                     Por favor, insira o ip de broadcast.
                   </div>
