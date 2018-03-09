@@ -113,17 +113,13 @@ sendCommandBtn.addEventListener('click', function (ev) {
                         let dados = JSON.parse(msg);
                         if (dados.type === 'end') {
 
-                            let execTime = dados.execTime;                   // tempo de execução (vem do cliente)
-                            let totalTime = dados.totalTime;                  // tempo total de execução (calculado na thread do servidor)
-                            let netTime = (totalTime - execTime) / 2;       // tempo de rede
-                            let comando = dados.comando;                    // comando enviado para ser executado pelo cliente.
 
                             // Salvando no MongoDB
                             var result = new Result({
                                 command: dados.comando,
                                 client_id: client_addr,
-                                net_time: ((totalTime - execTime) / 2),
-                                exec_time: execTime
+                                net_time: dados.netTime,
+                                exec_time: dados.execTimes
                             });
                             result.save(function (err, result) {
                                 if (err) return console.error(err);
