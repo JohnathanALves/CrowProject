@@ -402,26 +402,18 @@ var experimentos = [
         ]
     }
 ];
-var id = '';
+var data = {};
 
 ipcRenderer.on('store-data', (event, message) => {
-    id = message.id;
-
-    for (var i = 0; i < experimentos.length; i++) {
-        if (experimentos[i]._id === id) {
-            experimento.push(experimentos[i]);
-            break;
-        }
-    };
-
+    data = message;
     myEmitter.emit('event');
 });
 
 
 myEmitter.on('event', () => {
-    $('#exp').text(experimento[0]._id);
-    $('#command').text('Comando: ' + experimento[0].command);
-    $('#repeat').text('Repetições: ' + experimento[0].repeat);
+    $('#exp').text(data.id);
+    $('#command').text('Comando: ' + data.command);
+    $('#repeat').text('Repetições: ' + data.exec_time.length);
 
     $('#detail').DataTable({
         language: {
@@ -433,7 +425,7 @@ myEmitter.on('event', () => {
         paging: false,
         responsive: true,
         info: false,
-        data: experimento[0].experiment,
+        data: data.exec_time,
         columns: [
             {
                 data: 'id',

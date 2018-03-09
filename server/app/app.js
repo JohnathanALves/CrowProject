@@ -21,6 +21,7 @@ app.on('ready', function() {
     width: 1281,
     height: 800,
     frame: false,
+    icon:'./assets/img/logo.png'
   });
 
   // and load the index.html of the app.

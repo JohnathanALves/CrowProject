@@ -168,25 +168,21 @@ tableEmitter.on("dataReady", () => {
                 title: 'ID'
             },
             {
-                data: 'comando',
+                data: 'command',
                 title: 'Comando'
             },
             {
-                data: 'repeticoes',
+                data: 'exec_time.length',
                 title: 'Repetições'
             },
-            {
-                data: 'tempoTotal',
-                title: 'Tempo Total'
-            },
-            {
-                data: 'tempoRede',
-                title: 'Tempo de Rede'
-            },
-            {
-                data: 'tempoServico',
-                title: 'Tempo de Serviço'
-            },
+            // {
+            //     data: 'tempoTotal',
+            //     title: 'Tempo Total'
+            // },
+            // {
+            //     data: 'net_time',
+            //     title: 'Tempo de Rede'
+            // },
             {
                 data: null,
                 //title: 'Detalhes'
@@ -205,10 +201,17 @@ tableEmitter.on("dataReady", () => {
 
     // Adiciona a ação ao botão de detalhes
     $('#output tbody').on('click', 'button', function () {
-        var data = table.row($(this).parents('tr')).data();
-        console.log(data.id);
 
-        createDetailWindow(data);
+        let id = table.row($(this).parents('tr')).data(); //Recupera id da linha da tabela
+
+        Result.findById(id).exec(function (err, gettedData) {
+            if (err) return handleError(err);
+            console.log(gettedData);
+            createDetailWindow(gettedData);
+        });
+        
+
+        //
     });
 
 });
