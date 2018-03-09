@@ -77,20 +77,12 @@ SocketMan.prototype.Connect = function (client, port, callback) {
     EventEmitter.call(this);
     const that = this;
 
-    //variaveis de tempo
-    // let initTotalTime, diff;
-    // let NS_PER_SEC = 1e9;
-
     var client = net.connect({
         host: client,
         port: port
     }, function () {
         console.log('connected to client');
 
-        //inicia a contagem do tempo total
-        // initTotalTime = process.hrtime();
-
-        // client.write('Execute:node ./src/consumerTest.js');
     });
 
     callback(client);

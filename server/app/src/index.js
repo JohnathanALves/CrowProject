@@ -123,6 +123,7 @@ sendCommandBtn.addEventListener('click', function (ev) {
                             });
                             result.save(function (err, result) {
                                 if (err) return console.error(err);
+                                socketMan = null;
                             });
 
                             forked.kill('SIGINT');
