@@ -6,21 +6,26 @@ const util = require('util')
 var os = require('os');
 var iputils = require('ip');
 
-function SocketMan(ipaddr, broadcast) {
-    console.log('Objeto criado! Buscando informacoes de rede..');
-    var ifaces = os.networkInterfaces();
-    var ifaceKey = Object.keys(ifaces)[1];
-    var NET_ADAPTER = ifaces[ifaceKey].pop(); //main network adapter
-    this._ipAddr = ipaddr ? ipaddr : NET_ADAPTER['address'];
-    var NETMSK_ADDR = NET_ADAPTER['netmask'];
-    this._broadcastAddr = broadcast ? broadcast : iputils.subnet(this._ipAddr, NETMSK_ADDR)['broadcastAddress'];
+function getIfaces(){
+    let ifaceKeys = os.networkInterfaces();
+    return Object.keys(ifaceKeys);
+};
 
+function SocketMan(ifaceKey) {
+    let ifaces = os.networkInterfaces();
+    let NET_ADAPTER = ifaces[ifaceKey].pop(); //main network adapter
+    let NETMSK_ADDR = NET_ADAPTER['netmask'];
+    this._ipAddr = NET_ADAPTER['address'];
+    this._broadcastAddr = iputils.subnet(this._ipAddr, NETMSK_ADDR)['broadcastAddress'];
+    this._clients = ['127.0.0.1', this._ipAddr]; // inicializa lista de clientes
+    console.log(`Interface selecionada: '${ifaceKey}'`);
     console.log('IP: ' + this._ipAddr);
     console.log('BROADCAST: ' + this._broadcastAddr);
 };
 
-SocketMan.prototype.findClients = function (port, timeout, callback) {
-    var clients = ['127.0.0.1', this._ipAddr];
+SocketMan.prototype.findClients = function (port) {
+    EventEmitter.call(this);
+    const that = this;
     var dgram = require('dgram');
     var server = dgram.createSocket("udp4");
     var broadcastAddr = this._broadcastAddr;
@@ -32,26 +37,17 @@ SocketMan.prototype.findClients = function (port, timeout, callback) {
 
     server.on('message', (msg, rinfo) => {
         if (`${msg}` == 'Broadcast') { // é uma msg de broadcast
-            if ((clients).indexOf(rinfo.address) == -1) { // cliente novo
+            if ((this._clients).indexOf(rinfo.address) == -1) { // cliente novo
                 console.log(`server got: ${msg} from ${rinfo.address}:${rinfo.port}`);
-                (clients).push(rinfo.address);
+                this._clients.push(rinfo.address);
+                that.emit('NewClient', rinfo.address);
             }
         }
     });
 
     server.on('listening', () => {
         const address = server.address();
-        console.log(`server listening ${address.address}:${address.port}`);
-        setTimeout(function () {
-            console.log('encerrando conexão..');
-            clearTimeout(loop);
-            server.close()
-            if (clients) {
-                return callback(null, clients.slice(2));
-            } else {
-                return callback(true, null);
-            }
-        }, timeout);
+        console.log(`UDP server listening on ${address.address}:${address.port}`);
     });
 
     server.bind({
@@ -59,9 +55,9 @@ SocketMan.prototype.findClients = function (port, timeout, callback) {
         },
         function () {
             server.setBroadcast(true);
-            loop = setInterval(function () {
+            setInterval(function () {
                 broadcastNew()
-            }, 500);
+            }, 1000);
         });
 
     function broadcastNew() {
@@ -126,4 +122,4 @@ SocketMan.prototype.sendExecute = function(socket, comando, repeticoes) {
 util.inherits(SocketMan, EventEmitter)
 
 
-module.exports = SocketMan;
+module.exports = {SocketMan, getIfaces};

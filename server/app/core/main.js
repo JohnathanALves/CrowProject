@@ -2,7 +2,10 @@ const {
     fork
 } = require('child_process');
 
-
+const {
+    SocketMan, 
+    getIfaces 
+}= require('./socketman.js');
 
 // var mongoose = require('mongoose');
 // let db_ip = '172.17.0.4';
@@ -13,17 +16,21 @@ const {
 //     console.log('Conectado ao servidor MongoDB: ' + db_ip);
 // });
 
-var sm = require('./socketman.js');
-var socketMan = new sm();
+var ifaces = getIfaces();
+console.log(ifaces);
 
-var PORT = 6024;
+var socketMan = new SocketMan('vEthernet (Novo)');
+
+var TCP_PORT = 6024;
+var UDP_PORT = 6023;
 var timeout = 5000;
 
 var COMANDO = 'node' + ' ' +  './src/' + 'consumerTest.js';
 
 var LOOP_NUM = 10;
 
-socketMan.findClients(PORT, timeout, function (err, clients) { // clients é a lista de ip dos clientes..
+
+socketMan.findClients(timeout, function (err, clients) { // clients é a lista de ip dos clientes..
     if (err) {
         return console.log('erro!');
     }
