@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="..\node_modules\datatables.net-bs4\css\dataTables.bootstrap4.css">
   <link rel="stylesheet" href="..\assets\css\animate.css">
   <link rel="stylesheet" href="..\assets\css\app.css">
+  <script defer src="..\assets\js\fontawesome-all.min.js"></script>
 </head>
 
 <body>
@@ -18,7 +19,7 @@
     </a>
     <button id="cancelBtn" class="btn btn-sm btn-outline-danger notDragable">Sair</button>
   </nav>
-  
+
   <!-- Definição das NAVS Tab -->
   <nav class="nav-fill top-buffer">
     <div class="nav nav-tabs" id="nav-tab" role="tablist">
@@ -34,47 +35,52 @@
     <!-- Conteúdo das NAVS -->
     <div class="tab-content" id="nav-tabContent">
       <!-- Conteúdo da Nav de experimento -->
-      <div class="alert alert-warning text-center animated pulse dbConnected" style="display:block" role="alert">
-        Antes de iniciar um experimento conecte-me à base de dados na aba "Configuração".
-      </div>
       <div class="tab-pane fade show active" id="nav-exp" role="tabpanel" aria-labelledby="nav-exp-tab">
         <div class="row">
-          <div class="col-sm-4">
+          <div class="col-sm-3">
             <div class="card top-buffer">
-                <div class="card-body">
-                    <h5 class=" text-center">
-                      <span class="text-muted">Clientes</span>
-                      <a href="#" id="refreshClientList"><span class="icon"></span></a>
-                    </h5>
-                    <ul class="list-group" id="clientList">
-                    </ul>
-                </div>
+              <div class="card-header">
+                <h1 class="lead text-center">Clientes</h1>
+              </div>
+              <div class="card-body">
+                <ul class="list-group" id="clientList"></ul>
+              </div>
+              <div class="card-footer">
+                <button type="button" class="btn btn-primary btn-block" style="display: inline" id="refreshClientList" disabled> 
+                  <i class="fas fa-sync"></i>
+                  Atualizar
+                </button>
+              </div>
             </div>
           </div>
-          <div class="col-sm-8">
+          <div class="col-sm-9">
             <div class="card top-buffer">
-                <div class="card-body">
-                  <form id="cmdForm" novalidate>
-                    <fieldset id="cmdFieldset" disabled>
-                      <div class="form-group">
-                        <label for="commandInput">Comando</label>
-                        <input id="commandInput" type="text" class="form-control" placeholder='Ex.: "comando [opções] caminho\para\o\arquivo"' required>
-                        <div class="invalid-feedback">
-                          Por favor, insira um comando.
-                        </div>
-                      </div>
-                      <div class="form-group">
-                        <label for="repeatNumber">Quantidade de Repetições</label>
-                        <input id="repeatNumber" type="number" min="1" step="1" class="form-control" placeholder='Ex.: "10"' required>
-                        <div class="invalid-feedback">
-                          Por favor, insira uma quantidade de repetições válida.
-                        </div>
-                      </div>
-                      <button id="sendCommandBtn" type="submit" class="btn btn-dark">Enviar</button>
-                    </fieldset>
-                  </form>
+              <div class="card-body">
+                <div id="clickClient" class="alert alert-warning text-center animated pulse treeTimes" style="display:block" role="alert">
+                  Antes de iniciar um experimento conecte-me à base de dados na aba "Configuração".
+                  <!-- Antes de realizar um experimento atualize a lista de clientes. -->
                 </div>
+                <form id="cmdForm" novalidate>
+                  <fieldset id="cmdFieldset" disabled>
+                    <div class="form-group">
+                      <label for="commandInput">Comando</label>
+                      <input id="commandInput" type="text" class="form-control" placeholder='Ex.: "comando [opções] caminho\para\o\arquivo"' required>
+                      <div class="invalid-feedback">
+                        Por favor, insira um comando.
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label for="repeatNumber">Quantidade de Repetições</label>
+                      <input id="repeatNumber" type="number" min="1" step="1" class="form-control" placeholder='Ex.: "10"' required>
+                      <div class="invalid-feedback">
+                        Por favor, insira uma quantidade de repetições válida.
+                      </div>
+                    </div>
+                    <button id="sendCommandBtn" type="submit" class="btn btn-dark">Enviar</button>
+                  </fieldset>
+                </form>
               </div>
+            </div>
           </div>
         </div>
       </div>
@@ -84,8 +90,9 @@
           <h1 class="card-header display-4 text-center">Experimentos Realizados</h1>
           <div class="card-body">
             <!-- Tabela de dados -->
-            <div class="alert alert-warning text-center animated pulse dbConnected top-buffer" style="display:block" role="alert">
+            <div id="dbConnected" class="alert alert-warning text-center animated pulse treeTimes top-buffer" style="display:block" role="alert">
               Antes de visualizar os dados conecte-me à base de dados na aba "Configuração".
+              <!-- Antes de configurar a base de dados atualize a lista de clientes na aba experimento. -->
             </div>
             <div class="row justify-content-center table-top">
               <table id="output" class="table table-hover table-sm" cellspacing="0" width="100%"></table>
@@ -97,7 +104,9 @@
       <div class="tab-pane fade" id="nav-config" role="tabpanel" aria-labelledby="nav-config-tab">
         <div class="card top-buffer">
           <div class="card-body">
-
+            <!-- <div id="clickClient" class="alert alert-warning text-center animated pulse treeTimes top-buffer" style="display:block" role="alert">
+              Antes de configurar a base de dados atualize a lista de clientes na aba experimento.
+            </div> -->
             <div id="dbAlert" class="alert alert-dismissible fade show animated fadeInDown" role="alert">
               <p class="text-justify">Conectado com sucesso!</p>
               <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -106,9 +115,10 @@
             </div>
 
             <form id="dbForm" novalidate>
+              <!-- <fieldset id="dbFieldset" disabled> -->
               <div class="form-group">
                 <label for="dbIp">IP do servidor de Banco de Dados</label>
-                <input id="dbIp" type="text" class="form-control" placeholder="Ex.: 10.0.0.1" required pattern="((^|\.)((25[0-5])|(2[0-4]\d)|(1\d\d)|([1-9]?\d))){4}$">
+                <input id="dbIp" type="text" class="form-control" value="127.0.0.1" placeholder="Ex.: 10.0.0.1" required pattern="((^|\.)((25[0-5])|(2[0-4]\d)|(1\d\d)|([1-9]?\d))){4}$">
                 <div class="invalid-feedback">
                   Por favor, insira um endereço de IP válido.
                 </div>
@@ -119,6 +129,7 @@
               </div>
               <button id="connectToDb" class="btn btn-dark">Conectar</button>
               <!-- <span id="isConnectedIcon" class="icon icon-record"></span> -->
+              <!-- </fieldset> -->
             </form>
           </div>
         </div>

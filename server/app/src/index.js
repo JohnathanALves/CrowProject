@@ -42,6 +42,8 @@ const tableEmitter = new MyEmitter()
 var dbConfigured = false; //flag de database configurada
 var data = [];
 
+var clients = [];
+var socketMan;
 // conf lista de interfaces
 let ifacesList = getIfaces();
 ifacesList.forEach(iface => {
@@ -84,9 +86,10 @@ connectToDb.addEventListener('click', function (ev) {
             dbConfigured = true; //seta a flag de db configurada
             setTimeout(() => {
                 getData();
-                $('.dbConnected').hide(); //esconde a mensagem de conexão necessária
-                $("#cmdFieldset").prop('disabled', false); //permite a inserção dos comandos
+                $('#dbConnected').hide(); //esconde a mensagem de conexão necessária
+                $('#clickClient').text('Antes de realizar um experimento atualize a lista de clientes.'); //muda o texto do aviso
                 $('#dbAlert p').text('Conectado ao servidor MongoDB: ' + db_ip + '. Você já pode realizar seus experimentos ou visualizar os dados.');
+                $("#refreshClientList").prop('disabled', false); //permite a atualização da lista de clientes
                 animateAlert('#dbAlert', 'alert-success', 'alert-danger');
             }, 1000);
 
@@ -101,13 +104,11 @@ connectToDb.addEventListener('click', function (ev) {
     form.addClass('was-validated'); //adiciona a classe que exibe as mensagem de validação do IP
 });
 
-
-var clients = [];
-var socketMan;
-
+//botão de atualizar lista de clientes
 refreshclientListBtn.addEventListener('click', function (ev) {
     ev.preventDefault();
-    clients = ['127.0.0.1', '1.1.1.1'];
+    $('#loadingModal').modal({ backdrop: 'static', keyboard: false }); //mostra o loading
+    clients = [];
     let interface = ifaceSelector.value;
     socketMan = new SocketMan(interface);
     socketMan.findClients(UDP_PORT);
@@ -125,9 +126,20 @@ refreshclientListBtn.addEventListener('click', function (ev) {
             li.appendChild(document.createTextNode(client));
             clientList.appendChild(li);
         });
+        // $("#dbFieldset").prop('disabled', false); //permite a configuração do DB
+        $('#loadingModal').modal('hide'); // esconde o loading
+        if (clients.length > 0) {
+            $('#clickClient').hide(); //remove o aviso para atualizar a lista de clientes
+            $("#cmdFieldset").prop('disabled', false); //permite a inserção dos comandos
+        }
+        else {
+            $('#clickClient').text('Nenhum cliente encontrado.'); //muda o texto do aviso
+            animateAlert('#clickClient', 'alert-danger', 'alert-warning');
+        }
     }, UDP_TIMEOUT);
 });
 
+//botão de enviar os comandos
 sendCommandBtn.addEventListener('click', function (ev) {
     ev.preventDefault();
     var form = $("#cmdForm");
