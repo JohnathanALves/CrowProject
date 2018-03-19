@@ -9,7 +9,7 @@ var iputils = require('ip');
 function getIfaces(){
     let ifaceKeys = os.networkInterfaces();
     return Object.keys(ifaceKeys);
-};
+}; 
 
 function SocketMan(ifaceKey) {
     let ifaces = os.networkInterfaces();
@@ -39,7 +39,6 @@ SocketMan.prototype.findClients = function (port) {
         if (`${msg}` == 'Broadcast') { // é uma msg de broadcast
             if ((this._clients).indexOf(rinfo.address) == -1) { // cliente novo
                 console.log(`server got: ${msg} from ${rinfo.address}:${rinfo.port}`);
-                this._clients.push(rinfo.address);
                 that.emit('NewClient', rinfo.address);
             }
         }

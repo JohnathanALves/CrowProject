@@ -1,7 +1,8 @@
 const electron = require('electron');
+const mongoose = require('mongoose');
+
 const BrowserWindow = electron.remote.BrowserWindow;
 const remote = electron.remote;
-const mongoose = require('mongoose');
 
 // Require jQuery
 const $ = require('jquery');
@@ -12,19 +13,21 @@ window.$ = window.jQuery = require('jquery');
 window.Popper = require('popper.js');
 window.Bootstrap = require('bootstrap');
 
-const sm = require('../core/socketman.js');
-// var socketMan = new sm('192.168.100.6', '192.168.100.255');
+const {
+    SocketMan, 
+    getIfaces 
+}= require('../core/socketman.js');
 
 const { fork } = require('child_process');
 
 const Result = require('../core/result.js');
 
-const PORT = 6024;
-const timeout = 5000;
+const TCP_PORT = 6024;
+const UDP_PORT = 6023;
 
 const cancelBtn = document.getElementById('cancelBtn');
 const sendCommandBtn = document.getElementById('sendCommandBtn');
-
+const ifaceSelector = document.getElementById('ifaceSelector');
 
 const path = require('path');
 
@@ -35,6 +38,14 @@ const tableEmitter = new MyEmitter()
 
 var dbConfigured = false; //flag de database configurada
 var data = [];
+var TIMEOUT = 10000;
+
+// conf lista de interfaces
+let ifacesList = getIfaces();
+ifacesList.forEach (iface => {
+    ifaceSelector.options[ifaceSelector.options.length] = new Option(iface);
+});
+
 
 // Botão de sair da aplicação
 cancelBtn.addEventListener('click', function (ev) {
@@ -88,67 +99,101 @@ connectToDb.addEventListener('click', function (ev) {
     form.addClass('was-validated'); //adiciona a classe que exibe as mensagem de validação do IP
 });
 
+
+
 sendCommandBtn.addEventListener('click', function (ev) {
     ev.preventDefault();
-    var form = $("#cmdForm");
-    var socketMan = new sm(document.getElementById('serverIp').value, document.getElementById('broadcastIp').value);
-    
+    var form = $("#cmdForm");    
+    let interface = ifaceSelector.value;
     if (dbConfigured) {
-        if (form[0].checkValidity() === true) {
+        if (form[0].checkValidity() === true && interface) {
             let commandInput = document.getElementById('commandInput')
             let repeatNumber = document.getElementById('repeatNumber')
-
-            socketMan.findClients(PORT, timeout, function (err, clients) { // clients é a lista de ip dos clientes..
-                if (err) {
-                    return console.log('erro!');
-                }
-                console.log(clients);
-
-                clients.forEach(client_addr => {
-   
-                    //cria o processo filho para o endereço atual
-                    const forked = fork('./core/messenger.js');
-
-                    forked.on('message', (msg) => {
-                        let dados = JSON.parse(msg);
-                        if (dados.type === 'end') {
-
-
-                            // Salvando no MongoDB
-                            var result = new Result({
-                                command: dados.comando,
-                                client_id: client_addr,
-                                net_time: dados.netTime,
-                                exec_time: dados.execTimes
-                            });
-                            result.save(function (err, result) {
-                                if (err) return console.error(err);
-                                socketMan = null;
-                            });
-
-                            forked.kill('SIGINT');
-                            if (forked.killed) {
-                                console.log('Child process with PID ' + forked.pid + ' received the kill message.');
-                            };
-                        };
-                    });
-
-                    forked.send({
-                        addr: client_addr,
-                        port: PORT,
-                        comando: commandInput.value,
-                        loop: repeatNumber.value
-                    });
-                });
+            
+            var clients = [];            
+            var socketMan = new sm(interface);
+            socketMan.findClients(UDP_PORT);
+            socketMan.on('NewClient', client =>{
+                console.log(`Found client: ${client}`);
+                clients.push(client); //adiciona ip do cliente a lista;
             });
+            setTimeout(function(){
+                console.log(clients);
+            }, TIMEOUT);
         }
         else {
             ev.stopPropagation();
         };
-
         form.addClass('was-validated');
     };
 });
+
+
+
+
+// sendCommandBtn.addEventListener('click', function (ev) {
+// sendCommandBtn.addEventListener('click', function (ev) {
+//     ev.preventDefault();
+//     var form = $("#cmdForm");
+//     let interface = ifaceSelector.value;
+//     var socketMan = new sm(document.getElementById('serverIp').value, document.getElementById('broadcastIp').value);
+    
+//     if (dbConfigured) {
+//         if (form[0].checkValidity() === true) {
+//             let commandInput = document.getElementById('commandInput')
+//             let repeatNumber = document.getElementById('repeatNumber')
+
+//             socketMan.findClients(PORT, timeout, function (err, clients) { // clients é a lista de ip dos clientes..
+//                 if (err) {
+//                     return console.log('erro!');
+//                 }
+//                 console.log(clients);
+
+//                 clients.forEach(client_addr => {
+   
+//                     //cria o processo filho para o endereço atual
+//                     const forked = fork('./core/messenger.js');
+
+//                     forked.on('message', (msg) => {
+//                         let dados = JSON.parse(msg);
+//                         if (dados.type === 'end') {
+
+
+//                             // Salvando no MongoDB
+//                             var result = new Result({
+//                                 command: dados.comando,
+//                                 client_id: client_addr,
+//                                 net_time: dados.netTime,
+//                                 exec_time: dados.execTimes
+//                             });
+//                             result.save(function (err, result) {
+//                                 if (err) return console.error(err);
+//                                 socketMan = null;
+//                             });
+
+//                             forked.kill('SIGINT');
+//                             if (forked.killed) {
+//                                 console.log('Child process with PID ' + forked.pid + ' received the kill message.');
+//                             };
+//                         };
+//                     });
+
+//                     forked.send({
+//                         addr: client_addr,
+//                         port: PORT,
+//                         comando: commandInput.value,
+//                         loop: repeatNumber.value
+//                     });
+//                 });
+//             });
+//         }
+//         else {
+//             ev.stopPropagation();
+//         };
+
+//         form.addClass('was-validated');
+//     };
+// });
 
 
 tableEmitter.on("dataReady", () => {
