@@ -24,10 +24,13 @@ const Result = require('../core/result.js');
 
 const TCP_PORT = 6024;
 const UDP_PORT = 6023;
+const UDP_TIMEOUT = 5000;
 
 const cancelBtn = document.getElementById('cancelBtn');
 const sendCommandBtn = document.getElementById('sendCommandBtn');
 const ifaceSelector = document.getElementById('ifaceSelector');
+const clientList  = document.getElementById('clientList');
+const refreshclientListBtn  = document.getElementById('refreshClientList');
 
 const path = require('path');
 
@@ -38,7 +41,6 @@ const tableEmitter = new MyEmitter()
 
 var dbConfigured = false; //flag de database configurada
 var data = [];
-var TIMEOUT = 10000;
 
 // conf lista de interfaces
 let ifacesList = getIfaces();
@@ -100,26 +102,75 @@ connectToDb.addEventListener('click', function (ev) {
 });
 
 
+var clients = [];
+var socketMan;
+
+refreshclientListBtn.addEventListener('click', function(ev){
+    ev.preventDefault();
+    clients = ['127.0.0.1', '1.1.1.1'];
+    let interface = ifaceSelector.value;
+    socketMan = new SocketMan(interface);
+    socketMan.findClients(UDP_PORT);
+    socketMan.on('NewClient', client =>{
+        if (clients.indexOf(client) == -1){
+            console.log(`Found client: ${client}`);
+            clients.push(client); //adiciona ip do cliente a lista;
+        }
+    });
+    setTimeout(function(){
+        socketMan.stopUDP();
+        clients.forEach(client => {
+            let li = document.createElement("li");
+            li.className = 'list-group-item';
+            li.appendChild(document.createTextNode(client));
+            clientList.appendChild(li);
+        });
+    }, UDP_TIMEOUT);
+});
 
 sendCommandBtn.addEventListener('click', function (ev) {
     ev.preventDefault();
     var form = $("#cmdForm");    
-    let interface = ifaceSelector.value;
     if (dbConfigured) {
         if (form[0].checkValidity() === true && interface) {
             let commandInput = document.getElementById('commandInput')
             let repeatNumber = document.getElementById('repeatNumber')
-            
-            var clients = [];            
-            var socketMan = new sm(interface);
-            socketMan.findClients(UDP_PORT);
-            socketMan.on('NewClient', client =>{
-                console.log(`Found client: ${client}`);
-                clients.push(client); //adiciona ip do cliente a lista;
+
+            console.log('clients: '+clients);
+            clients.forEach(client_addr => {
+   
+            //cria o processo filho para o endereço atual
+            const forked = fork('./core/messenger.js');
+
+            forked.on('message', (msg) => {
+                let dados = JSON.parse(msg);
+                if (dados.type === 'end') {
+                    // Salvando no MongoDB
+                    var result = new Result({
+                        command: dados.comando,
+                        client_id: client_addr,
+                        net_time: dados.netTime,
+                        exec_time: dados.execTimes
+                    });
+                    result.save(function (err, result) {
+                        if (err) return console.error(err);
+                        socketMan = null;
+                    });
+
+                    forked.kill('SIGINT');
+                    if (forked.killed) {
+                        console.log('Child process with PID ' + forked.pid + ' received the kill message.');
+                    };
+                };
             });
-            setTimeout(function(){
-                console.log(clients);
-            }, TIMEOUT);
+
+            forked.send({
+                addr: client_addr,
+                port: TCP_PORT,
+                comando: commandInput.value,
+                loop: repeatNumber.value
+            });
+        });
         }
         else {
             ev.stopPropagation();

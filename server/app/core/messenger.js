@@ -1,4 +1,4 @@
-var sm = require('./socketman.js');
+var {SocketMan} = require('./socketman.js');
 
 // var COMANDO = 'node' + ' ' +  './src/' + 'consumerTest.js';
 
@@ -7,11 +7,11 @@ process.on('message', (msg) => {
 });
 
 var consumeTime = function (params) {
-    
+    console.log('opa!');
     var comando = params.comando;
     var loop = params.loop;
     
-    var socketMan = new sm();
+    var socketMan = new SocketMan();
     socketMan.Connect(params.addr, params.port, function(conexao){
         //variaveis de tempo
         let initTotalTime, diff;

@@ -34,35 +34,47 @@
     <!-- Conteúdo das NAVS -->
     <div class="tab-content" id="nav-tabContent">
       <!-- Conteúdo da Nav de experimento -->
+      <div class="alert alert-warning text-center animated pulse dbConnected" style="display:block" role="alert">
+        Antes de iniciar um experimento conecte-me à base de dados na aba "Configuração".
+      </div>
       <div class="tab-pane fade show active" id="nav-exp" role="tabpanel" aria-labelledby="nav-exp-tab">
-        <div class="card top-buffer">
-          <div class="card-body">
-            <div class="alert alert-warning text-center animated pulse dbConnected" style="display:block" role="alert">
-              Antes de iniciar um experimento conecte-me à base de dados na aba "Configuração".
+        <div class="row">
+          <div class="col-sm-4">
+            <div class="card top-buffer">
+                <div class="card-body">
+                    <h5 class=" text-center">
+                      <span class="text-muted">Clientes</span>
+                      <a href="#" id="refreshClientList"><span class="icon"></span></a>
+                    </h5>
+                    <ul class="list-group" id="clientList">
+                    </ul>
+                </div>
             </div>
-            <form id="cmdForm" novalidate>
-              <fieldset id="cmdFieldset" disabled>
-                <div class="form-group">
-                  <label for="commandInput">Comando</label>
-                  <input id="commandInput" type="text" class="form-control" placeholder='Ex.: "comando [opções] caminho\para\o\arquivo"' required>
-                  <div class="invalid-feedback">
-                    Por favor, insira um comando.
-                  </div>
+          </div>
+          <div class="col-sm-8">
+            <div class="card top-buffer">
+                <div class="card-body">
+                  <form id="cmdForm" novalidate>
+                    <fieldset id="cmdFieldset" disabled>
+                      <div class="form-group">
+                        <label for="commandInput">Comando</label>
+                        <input id="commandInput" type="text" class="form-control" placeholder='Ex.: "comando [opções] caminho\para\o\arquivo"' required>
+                        <div class="invalid-feedback">
+                          Por favor, insira um comando.
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label for="repeatNumber">Quantidade de Repetições</label>
+                        <input id="repeatNumber" type="number" min="1" step="1" class="form-control" placeholder='Ex.: "10"' required>
+                        <div class="invalid-feedback">
+                          Por favor, insira uma quantidade de repetições válida.
+                        </div>
+                      </div>
+                      <button id="sendCommandBtn" type="submit" class="btn btn-dark">Enviar</button>
+                    </fieldset>
+                  </form>
                 </div>
-                <div class="form-group">
-                  <label for="repeatNumber">Quantidade de Repetições</label>
-                  <input id="repeatNumber" type="number" min="1" step="1" class="form-control" placeholder='Ex.: "10"' required>
-                  <div class="invalid-feedback">
-                    Por favor, insira uma quantidade de repetições válida.
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label for="ifaceSelection">Selecione a interface de rede</label>
-                  <select id="ifaceSelector" type="text" class="form-control" placeholder='Interfaces'></select>
-                </div>
-                <button id="sendCommandBtn" type="submit" class="btn btn-dark">Enviar</button>
-              </fieldset>
-            </form>
+              </div>
           </div>
         </div>
       </div>
@@ -99,6 +111,10 @@
                 <input id="dbIp" type="text" class="form-control" placeholder="Ex.: 10.0.0.1" required pattern="((^|\.)((25[0-5])|(2[0-4]\d)|(1\d\d)|([1-9]?\d))){4}$">
                 <div class="invalid-feedback">
                   Por favor, insira um endereço de IP válido.
+                </div>
+                <div class="form-group">
+                  <label for="ifaceSelection">Selecione a interface de rede</label>
+                  <select id="ifaceSelector" type="text" class="form-control" placeholder='Interfaces'></select>
                 </div>
               </div>
               <button id="connectToDb" class="btn btn-dark">Conectar</button>

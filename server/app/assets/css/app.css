@@ -6,6 +6,16 @@
   -webkit-app-region: no-drag;
 }
 
+.icon {
+  background: url('../img/ic_refresh_black_24dp_1x.png');
+  height: 25px;
+  width: 25px;
+  display: inline-block;
+  align-content: right;
+  /* Other styles here */
+}
+
+
 hr{ 
     border: 0; 
     height: 1px; 

@@ -12,15 +12,25 @@ function getIfaces(){
 }; 
 
 function SocketMan(ifaceKey) {
-    let ifaces = os.networkInterfaces();
-    let NET_ADAPTER = ifaces[ifaceKey].pop(); //main network adapter
-    let NETMSK_ADDR = NET_ADAPTER['netmask'];
-    this._ipAddr = NET_ADAPTER['address'];
-    this._broadcastAddr = iputils.subnet(this._ipAddr, NETMSK_ADDR)['broadcastAddress'];
-    this._clients = ['127.0.0.1', this._ipAddr]; // inicializa lista de clientes
-    console.log(`Interface selecionada: '${ifaceKey}'`);
-    console.log('IP: ' + this._ipAddr);
-    console.log('BROADCAST: ' + this._broadcastAddr);
+    if (ifaceKey){
+        let ifaces = os.networkInterfaces();
+        let NET_ADAPTER = ifaces[ifaceKey].pop(); //main network adapter
+        let NETMSK_ADDR = NET_ADAPTER['netmask'];
+        this._ipAddr = NET_ADAPTER['address'];
+        this._broadcastAddr = iputils.subnet(this._ipAddr, NETMSK_ADDR)['broadcastAddress'];
+        this._clients = ['127.0.0.1', this._ipAddr]; // inicializa lista de clientes
+        console.log(`Interface selecionada: '${ifaceKey}'`);
+        console.log('IP: ' + this._ipAddr);
+        console.log('BROADCAST: ' + this._broadcastAddr);
+    }
+    else {
+        console.log('ifaceKey is null');
+    }
+};
+
+SocketMan.prototype.stopUDP = function(){
+    console.log('Clearing UDP interval');
+    clearInterval(this._UDPInterval);
 };
 
 SocketMan.prototype.findClients = function (port) {
@@ -54,9 +64,9 @@ SocketMan.prototype.findClients = function (port) {
         },
         function () {
             server.setBroadcast(true);
-            setInterval(function () {
+            that._UDPInterval = setInterval(function () {
                 broadcastNew()
-            }, 1000);
+            }, 5000);
         });
 
     function broadcastNew() {
