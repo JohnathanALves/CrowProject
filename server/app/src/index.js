@@ -36,8 +36,9 @@ const path = require('path');
 
 const EventEmitter = require('events');
 
-class MyEmitter extends EventEmitter { }
-const tableEmitter = new MyEmitter()
+class MyEmitter extends EventEmitter { };
+const tableEmitter = new MyEmitter();
+const eventEmitter = new MyEmitter(); // emissor de eventos para lógica de resultados
 
 var dbConfigured = false; //flag de database configurada
 var data = [];
@@ -84,6 +85,8 @@ connectToDb.addEventListener('click', function (ev) {
         });
         db.once('open', function () {
             dbConfigured = true; //seta a flag de db configurada
+            let interface = ifaceSelector.value;
+            socketMan = new SocketMan(interface);
             setTimeout(() => {
                 getData();
                 $('#dbConnected').hide(); //esconde a mensagem de conexão necessária
@@ -109,8 +112,6 @@ refreshclientListBtn.addEventListener('click', function (ev) {
     ev.preventDefault();
     $('#loadingModal').modal({ backdrop: 'static', keyboard: false }); //mostra o loading
     clients = [];
-    let interface = ifaceSelector.value;
-    socketMan = new SocketMan(interface);
     socketMan.findClients(UDP_PORT);
     socketMan.on('NewClient', client => {
         if (clients.indexOf(client) == -1) {
@@ -120,6 +121,7 @@ refreshclientListBtn.addEventListener('click', function (ev) {
     });
     setTimeout(function () {
         socketMan.stopUDP();
+        clientList.innerHTML = '';
         clients.forEach(client => {
             let li = document.createElement("li");
             li.className = 'list-group-item';
@@ -144,7 +146,7 @@ sendCommandBtn.addEventListener('click', function (ev) {
     ev.preventDefault();
     var form = $("#cmdForm");
     if (dbConfigured) {
-        if (form[0].checkValidity() === true && interface) {
+        if (form[0].checkValidity() === true) {
             let commandInput = document.getElementById('commandInput')
             let repeatNumber = document.getElementById('repeatNumber')
 
@@ -162,7 +164,7 @@ sendCommandBtn.addEventListener('click', function (ev) {
                     let dados = JSON.parse(msg);
                     if (dados.type === 'end') {
 
-                        EventEmitter.emit('saveResult', {
+                        eventEmitter.emit('saveResult', {
                             client_id: client_addr,
                             net_time: dados.netTime,
                             exec_time: dados.execTimes
@@ -183,16 +185,16 @@ sendCommandBtn.addEventListener('click', function (ev) {
                     loop: repeatNumber.value
                 });
             });
-            EventEmitter.on('saveResult', res => {
+            eventEmitter.on('saveResult', res => {
                 if (cont) {
                     results.push(res);
                     cont--;
                 }
                 else {
-                    EventEmitter.emit('saveData');
+                    eventEmitter.emit('saveData');
                 }
             });
-            EventEmitter.on('saveData', () => {
+            eventEmitter.on('saveData', () => {
                 let exp = new Result({
                     'command': commandInput.value,
                     'experiments': results

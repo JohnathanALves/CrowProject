@@ -30,6 +30,7 @@ function SocketMan(ifaceKey) {
 
 SocketMan.prototype.stopUDP = function(){
     console.log('Clearing UDP interval');
+    this._server.close();
     clearInterval(this._UDPInterval);
 };
 
@@ -37,15 +38,15 @@ SocketMan.prototype.findClients = function (port) {
     EventEmitter.call(this);
     const that = this;
     var dgram = require('dgram');
-    var server = dgram.createSocket("udp4");
+    this._server = dgram.createSocket("udp4");
     var broadcastAddr = this._broadcastAddr;
     var loop;
-    server.on('error', (err) => {
+    this._server.on('error', (err) => {
         console.log(`server error:\n${err.stack}`);
-        server.close();
+        this._server.close();
     });
 
-    server.on('message', (msg, rinfo) => {
+    this._server.on('message', (msg, rinfo) => {
         if (`${msg}` == 'Broadcast') { // é uma msg de broadcast
             if ((this._clients).indexOf(rinfo.address) == -1) { // cliente novo
                 console.log(`server got: ${msg} from ${rinfo.address}:${rinfo.port}`);
@@ -54,26 +55,25 @@ SocketMan.prototype.findClients = function (port) {
         }
     });
 
-    server.on('listening', () => {
-        const address = server.address();
+    this._server.on('listening', () => {
+        const address = this._server.address();
         console.log(`UDP server listening on ${address.address}:${address.port}`);
     });
 
-    server.bind({
+    this._server.bind({
             port: port,
         },
         function () {
-            server.setBroadcast(true);
+            that._server.setBroadcast(true);
             that._UDPInterval = setInterval(function () {
                 broadcastNew()
-            }, 5000);
+            }, 500);
         });
 
     function broadcastNew() {
         var message = new Buffer("Broadcast");
-        server.send(message, 0, message.length, port, broadcastAddr, function () {});
+        that._server.send(message, 0, message.length, port, broadcastAddr, function () {});
     }
-
 }
 
 SocketMan.prototype.Connect = function (client, port, callback) {
