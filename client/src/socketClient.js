@@ -7,27 +7,22 @@ var iputils = require('ip');
 var ifaces = os.networkInterfaces();
 
 
-function SocketClient(port, ipaddr) {
+function SocketClient() {
     EventEmitter.call(this);
     const that = this;
-    this._port = port;
-
     var ifaceKey = Object.keys(ifaces)[1];
     var NET_ADAPTER = ifaces[ifaceKey].pop(); //main network adapter
-    this._ipAddr = ipaddr ? ipaddr : NET_ADAPTER['address'];
+    this._ipAddr = NET_ADAPTER['address'];
     console.log('IP: ' + this._ipAddr);
-    this.findServer(port, function (servidor) {
-        that.emit('FoundServer', servidor);
-    });
 }
 
-SocketClient.prototype.findServer = function (port, callback) {
+SocketClient.prototype.UDPServer = function (port, callback) {
     var dgram = require('dgram');
     var client = dgram.createSocket('udp4');
 
     client.on('listening', function () {
         var address = client.address();
-        console.log('UDP Client listening on ' + address.address + ":" + address.port);
+        console.log(`UDP Client listening on port ${port}`);
     });
 
     client.on('message', function (message, rinfo) {
@@ -35,17 +30,13 @@ SocketClient.prototype.findServer = function (port, callback) {
         if (message == 'Broadcast') { // msg do tipo broadcast
             let message = 'Broadcast';
             client.send(message, 0, message.length, port, rinfo.address, function () {
-                client.close();
                 return callback({
                     'ip': rinfo.address,
                     'porta': rinfo.port
                 });
             });
-
         }
-
     });
-
     client.bind(port);
 }
 
@@ -91,7 +82,7 @@ SocketClient.prototype.listener = function (port, callback) {
     });
 
     server.listen(port, function () {
-        console.log('listenning to server messages!');
+        console.log(`TCP Server listening on port ${port}`);
     });
     
 }
