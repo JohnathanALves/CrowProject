@@ -98,6 +98,12 @@
               <table id="output" class="table table-hover table-sm" cellspacing="0" width="100%"></table>
             </div>
           </div>
+          <div class="card-footer text-center">
+            <button type="button" class="btn btn-primary" style="display: inline" id="refreshDatatable" disabled> 
+              <i class="fas fa-sync"></i>
+              Atualizar
+            </button>
+          </div>
         </div>
       </div>
       <!-- Conteúdo da Nav de configuração -->
@@ -124,7 +130,7 @@
                 </div>
                 <div class="form-group">
                   <label for="ifaceSelection">Selecione a interface de rede</label>
-                  <select id="ifaceSelector" type="text" class="form-control" placeholder='Interfaces'></select>
+                  <select id="ifaceSelector" type="text" class="form-control" placeholder='Interfaces' required></select>
                 </div>
               </div>
               <button id="connectToDb" class="btn btn-dark">Conectar</button>

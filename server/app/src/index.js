@@ -31,6 +31,7 @@ const sendCommandBtn = document.getElementById('sendCommandBtn');
 const ifaceSelector = document.getElementById('ifaceSelector');
 const clientList = document.getElementById('clientList');
 const refreshclientListBtn = document.getElementById('refreshClientList');
+const refreshDatatableBtn = document.getElementById('refreshDatatable');
 
 const path = require('path');
 
@@ -93,6 +94,7 @@ connectToDb.addEventListener('click', function (ev) {
                 $('#clickClient').text('Antes de realizar um experimento atualize a lista de clientes.'); //muda o texto do aviso
                 $('#dbAlert p').text('Conectado ao servidor MongoDB: ' + db_ip + '. Você já pode realizar seus experimentos ou visualizar os dados.');
                 $("#refreshClientList").prop('disabled', false); //permite a atualização da lista de clientes
+                $('#refreshDatatable').prop('disabled', false); //habilita o botão para atualizar a tabela
                 animateAlert('#dbAlert', 'alert-success', 'alert-danger');
             }, 1000);
 
@@ -227,73 +229,6 @@ sendCommandBtn.addEventListener('click', function (ev) {
 });
 
 
-
-
-// sendCommandBtn.addEventListener('click', function (ev) {
-// sendCommandBtn.addEventListener('click', function (ev) {
-//     ev.preventDefault();
-//     var form = $("#cmdForm");
-//     let interface = ifaceSelector.value;
-//     var socketMan = new sm(document.getElementById('serverIp').value, document.getElementById('broadcastIp').value);
-
-//     if (dbConfigured) {
-//         if (form[0].checkValidity() === true) {
-//             let commandInput = document.getElementById('commandInput')
-//             let repeatNumber = document.getElementById('repeatNumber')
-
-//             socketMan.findClients(PORT, timeout, function (err, clients) { // clients é a lista de ip dos clientes..
-//                 if (err) {
-//                     return console.log('erro!');
-//                 }
-//                 console.log(clients);
-
-//                 clients.forEach(client_addr => {
-
-//                     //cria o processo filho para o endereço atual
-//                     const forked = fork('./core/messenger.js');
-
-//                     forked.on('message', (msg) => {
-//                         let dados = JSON.parse(msg);
-//                         if (dados.type === 'end') {
-
-
-//                             // Salvando no MongoDB
-//                             var result = new Result({
-//                                 command: dados.comando,
-//                                 client_id: client_addr,
-//                                 net_time: dados.netTime,
-//                                 exec_time: dados.execTimes
-//                             });
-//                             result.save(function (err, result) {
-//                                 if (err) return console.error(err);
-//                                 socketMan = null;
-//                             });
-
-//                             forked.kill('SIGINT');
-//                             if (forked.killed) {
-//                                 console.log('Child process with PID ' + forked.pid + ' received the kill message.');
-//                             };
-//                         };
-//                     });
-
-//                     forked.send({
-//                         addr: client_addr,
-//                         port: PORT,
-//                         comando: commandInput.value,
-//                         loop: repeatNumber.value
-//                     });
-//                 });
-//             });
-//         }
-//         else {
-//             ev.stopPropagation();
-//         };
-
-//         form.addClass('was-validated');
-//     };
-// });
-
-
 tableEmitter.on("dataReady", (data) => {
     $('#output').DataTable({
         language: {
@@ -311,17 +246,8 @@ tableEmitter.on("dataReady", (data) => {
                 data: 'command',
                 title: 'Comando'
             },
-            // {
-            //     data: 'tempoTotal',
-            //     title: 'Tempo Total'
-            // },
-            // {
-            //     data: 'net_time',
-            //     title: 'Tempo de Rede'
-            // },
             {
                 data: null,
-                //title: 'Detalhes'
             },
         ],
         columnDefs: [{
@@ -338,17 +264,23 @@ tableEmitter.on("dataReady", (data) => {
     // Adiciona a ação ao botão de detalhes
     $('#output tbody').on('click', 'button', function () {
 
-        let id = table.row($(this).parents('tr')).data(); //Recupera id da linha da tabela
-
-        Result.findById(id).exec(function (err, gettedData) {
+        let row = table.row($(this).parents('tr')).data(); //Recupera id da linha da tabela
+        
+        Result.findById(row.id).exec(function (err, gettedData) {
             if (err) return handleError(err);
-            console.log(gettedData);
+            //console.log(gettedData);
+            console.log(row.id);
             createDetailWindow(gettedData);
         });
-
-
-        //
     });
+
+});
+
+refreshDatatableBtn.addEventListener('click', function (ev) {
+    ev.preventDefault();
+    $('#output').DataTable().destroy();
+    $('#output').empty(); // empty in case the columns change
+    getData();
 
 });
 // Cria a janela de detalhes quando o botão é clicado
@@ -356,8 +288,11 @@ function createDetailWindow(data) {
     const modalPath = path.join('file://', __dirname, 'details.html')
     let win = new BrowserWindow({ height: 800, frame: false }) //{ frame: false }
 
-    win.on('close', () => { win = null });
+    win.on('closed', () => { 
+        win = null 
+    });
     win.loadURL(modalPath);
+    
     win.webContents.on('did-finish-load', () => {
         win.webContents.send('store-data', data);
     });
