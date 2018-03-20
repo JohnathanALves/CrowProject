@@ -25,11 +25,13 @@ ipcRenderer.on('store-data', (event, message) => {
 // });
 
 myEmitter.on('dataReceived', (res) => {
+    //console.log(res);
     let dataset = {};
     dataset.command = res.command;
     dataset.id = res.id;
     dataset.repeat = res.experiments[0].exec_time.length;
     dataset.experiments = mountDataset(res.experiments);
+    dataset.date = res.createdAt;
     //dataset.netTime = res.net_time;
     // console.log(dataset);
     myEmitter.emit('datasetMounted', dataset);
@@ -55,10 +57,11 @@ function mountDataset(data) {
 };
 
 myEmitter.on('datasetMounted', (dataset) => {
-    console.log(dataset.experiments)
+    //console.log(dataset)
     $('#exp').text(dataset.id);
     $('#command').text('Comando: ' + dataset.command);
     $('#repeat').text('Repetições: ' + dataset.repeat);
+    $('#date').text('Data: ' + dataset.date);
     // $('#repeat').text('Repetições: ' + dataset.exec_time.length);
 
     $('#detail').DataTable({

@@ -243,6 +243,10 @@ tableEmitter.on("dataReady", (data) => {
                 title: 'ID'
             },
             {
+                data: 'createdAt',
+                title: 'Data'
+            },
+            {
                 data: 'command',
                 title: 'Comando'
             },
