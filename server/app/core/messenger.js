@@ -40,7 +40,7 @@ var consumeTime = function (params) {
                 'type': 'end',
                 'execTimes' : valor, 
                 'totalTime': totalTime, 
-                'netTime': ((totalTime - CTotalTime)/loop), 
+                'netTime': ((totalTime - CTotalTime)/2), 
                 'comando': comando
             };
 
