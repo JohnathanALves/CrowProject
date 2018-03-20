@@ -121,10 +121,12 @@ refreshclientListBtn.addEventListener('click', function (ev) {
     });
     setTimeout(function () {
         socketMan.stopUDP();
+        
         clientList.innerHTML = '';
+        
         clients.forEach(client => {
             let li = document.createElement("li");
-            li.className = 'list-group-item';
+            li.className = 'list-group-item text-center';
             li.appendChild(document.createTextNode(client));
             clientList.appendChild(li);
         });
@@ -133,6 +135,7 @@ refreshclientListBtn.addEventListener('click', function (ev) {
         if (clients.length > 0) {
             $('#clickClient').hide(); //remove o aviso para atualizar a lista de clientes
             $("#cmdFieldset").prop('disabled', false); //permite a inserção dos comandos
+            animateAlert('#clickClient', 'alert-warning', 'alert-danger');
         }
         else {
             $('#clickClient').text('Nenhum cliente encontrado.'); //muda o texto do aviso
@@ -147,6 +150,9 @@ sendCommandBtn.addEventListener('click', function (ev) {
     var form = $("#cmdForm");
     if (dbConfigured) {
         if (form[0].checkValidity() === true) {
+
+            $('#loadingModal').modal({ backdrop: 'static', keyboard: false }); //chama o modal
+
             let commandInput = document.getElementById('commandInput')
             let repeatNumber = document.getElementById('repeatNumber')
 
@@ -186,12 +192,13 @@ sendCommandBtn.addEventListener('click', function (ev) {
                 });
             });
             eventEmitter.on('saveResult', res => {
+                console.log(cont);
                 if (cont) {
                     results.push(res);
                     cont--;
-                }
-                else {
-                    eventEmitter.emit('saveData');
+                    if (!cont) {
+                        eventEmitter.emit('saveData');
+                    }
                 }
             });
             eventEmitter.on('saveData', () => {
@@ -201,6 +208,7 @@ sendCommandBtn.addEventListener('click', function (ev) {
                 });
                 exp.save(function (err) {
                     if (err) return console.log('Save Error!');
+                    $('#loadingModal').modal('hide'); // esconde o loading
                 });
             })
         }
@@ -295,10 +303,6 @@ tableEmitter.on("dataReady", () => {
             {
                 data: 'command',
                 title: 'Comando'
-            },
-            {
-                data: 'exec_time.length',
-                title: 'Repetições'
             },
             // {
             //     data: 'tempoTotal',

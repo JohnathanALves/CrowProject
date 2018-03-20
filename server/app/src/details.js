@@ -402,18 +402,18 @@ var experimentos = [
         ]
     }
 ];
-var data = {};
+//var data = {};
 
 ipcRenderer.on('store-data', (event, message) => {
-    data = message;
-    myEmitter.emit('event');
+    //data = message;
+    myEmitter.emit('event', message);
 });
 
 
-myEmitter.on('event', () => {
-    $('#exp').text(data.id);
-    $('#command').text('Comando: ' + data.command);
-    $('#repeat').text('Repetições: ' + data.exec_time.length);
+myEmitter.on('event', (res) => {
+    $('#exp').text(res.id);
+    $('#command').text('Comando: ' + res.command);
+    // $('#repeat').text('Repetições: ' + res.exec_time.length);
 
     $('#detail').DataTable({
         language: {
