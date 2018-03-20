@@ -7,7 +7,7 @@ var resultSchema = mongoose.Schema({
         net_time: Number,
         exec_time: [{type: Number}],
     }]
-});
+}, {timestamps: true});
 
 var Result = mongoose.model('Result', resultSchema);
 
