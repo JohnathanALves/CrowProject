@@ -7,413 +7,59 @@ const EventEmitter = require('events');
 class MyEmitter extends EventEmitter { }
 const myEmitter = new MyEmitter()
 
-
-var experimento = new Array();
-var experimentos = [
-    {
-        "_id": "5a91857f08516922a71861f2",
-        "command": "officia",
-        "repeat": 10,
-        "experiment": [
-            {
-                "id": 0,
-                "netTime": 58,
-                "serviceTime": 15
-            },
-            {
-                "id": 1,
-                "netTime": 56,
-                "serviceTime": 65
-            },
-            {
-                "id": 2,
-                "netTime": 5,
-                "serviceTime": 53
-            },
-            {
-                "id": 3,
-                "netTime": 44,
-                "serviceTime": 22
-            },
-            {
-                "id": 4,
-                "netTime": 99,
-                "serviceTime": 62
-            },
-            {
-                "id": 5,
-                "netTime": 95,
-                "serviceTime": 20
-            },
-            {
-                "id": 6,
-                "netTime": 73,
-                "serviceTime": 34
-            },
-            {
-                "id": 7,
-                "netTime": 24,
-                "serviceTime": 40
-            },
-            {
-                "id": 8,
-                "netTime": 37,
-                "serviceTime": 46
-            },
-            {
-                "id": 9,
-                "netTime": 36,
-                "serviceTime": 61
-            }
-        ]
-    },
-    {
-        "_id": "5a91857f3413c4317e0c44f6",
-        "command": "nisi",
-        "repeat": 10,
-        "experiment": [
-            {
-                "id": 0,
-                "netTime": 13,
-                "serviceTime": 30
-            },
-            {
-                "id": 1,
-                "netTime": 25,
-                "serviceTime": 34
-            },
-            {
-                "id": 2,
-                "netTime": 67,
-                "serviceTime": 53
-            },
-            {
-                "id": 3,
-                "netTime": 52,
-                "serviceTime": 83
-            },
-            {
-                "id": 4,
-                "netTime": 92,
-                "serviceTime": 4
-            },
-            {
-                "id": 5,
-                "netTime": 35,
-                "serviceTime": 22
-            },
-            {
-                "id": 6,
-                "netTime": 13,
-                "serviceTime": 100
-            },
-            {
-                "id": 7,
-                "netTime": 14,
-                "serviceTime": 89
-            },
-            {
-                "id": 8,
-                "netTime": 18,
-                "serviceTime": 22
-            },
-            {
-                "id": 9,
-                "netTime": 86,
-                "serviceTime": 64
-            }
-        ]
-    },
-    {
-        "_id": "5a91857fa59b7e02e3dad391",
-        "command": "nostrud",
-        "repeat": 10,
-        "experiment": [
-            {
-                "id": 0,
-                "netTime": 42,
-                "serviceTime": 26
-            },
-            {
-                "id": 1,
-                "netTime": 47,
-                "serviceTime": 76
-            },
-            {
-                "id": 2,
-                "netTime": 21,
-                "serviceTime": 21
-            },
-            {
-                "id": 3,
-                "netTime": 90,
-                "serviceTime": 94
-            },
-            {
-                "id": 4,
-                "netTime": 82,
-                "serviceTime": 56
-            },
-            {
-                "id": 5,
-                "netTime": 49,
-                "serviceTime": 70
-            },
-            {
-                "id": 6,
-                "netTime": 29,
-                "serviceTime": 61
-            },
-            {
-                "id": 7,
-                "netTime": 7,
-                "serviceTime": 45
-            },
-            {
-                "id": 8,
-                "netTime": 45,
-                "serviceTime": 85
-            },
-            {
-                "id": 9,
-                "netTime": 97,
-                "serviceTime": 69
-            }
-        ]
-    },
-    {
-        "_id": "5a91857fdabc6b433102c44d",
-        "command": "Lorem",
-        "repeat": 10,
-        "experiment": [
-            {
-                "id": 0,
-                "netTime": 77,
-                "serviceTime": 8
-            },
-            {
-                "id": 1,
-                "netTime": 17,
-                "serviceTime": 39
-            },
-            {
-                "id": 2,
-                "netTime": 62,
-                "serviceTime": 61
-            },
-            {
-                "id": 3,
-                "netTime": 47,
-                "serviceTime": 41
-            },
-            {
-                "id": 4,
-                "netTime": 53,
-                "serviceTime": 14
-            },
-            {
-                "id": 5,
-                "netTime": 69,
-                "serviceTime": 12
-            },
-            {
-                "id": 6,
-                "netTime": 40,
-                "serviceTime": 100
-            },
-            {
-                "id": 7,
-                "netTime": 2,
-                "serviceTime": 98
-            },
-            {
-                "id": 8,
-                "netTime": 71,
-                "serviceTime": 73
-            },
-            {
-                "id": 9,
-                "netTime": 88,
-                "serviceTime": 36
-            }
-        ]
-    },
-    {
-        "_id": "5a91857fa691d60f498472cf",
-        "command": "consequat",
-        "repeat": 10,
-        "experiment": [
-            {
-                "id": 0,
-                "netTime": 18,
-                "serviceTime": 70
-            },
-            {
-                "id": 1,
-                "netTime": 37,
-                "serviceTime": 84
-            },
-            {
-                "id": 2,
-                "netTime": 36,
-                "serviceTime": 100
-            },
-            {
-                "id": 3,
-                "netTime": 79,
-                "serviceTime": 76
-            },
-            {
-                "id": 4,
-                "netTime": 17,
-                "serviceTime": 97
-            },
-            {
-                "id": 5,
-                "netTime": 13,
-                "serviceTime": 46
-            },
-            {
-                "id": 6,
-                "netTime": 57,
-                "serviceTime": 28
-            },
-            {
-                "id": 7,
-                "netTime": 14,
-                "serviceTime": 64
-            },
-            {
-                "id": 8,
-                "netTime": 40,
-                "serviceTime": 31
-            },
-            {
-                "id": 9,
-                "netTime": 15,
-                "serviceTime": 11
-            }
-        ]
-    },
-    {
-        "_id": "5a91857fe43f6908fd903675",
-        "command": "mollit",
-        "repeat": 10,
-        "experiment": [
-            {
-                "id": 0,
-                "netTime": 49,
-                "serviceTime": 82
-            },
-            {
-                "id": 1,
-                "netTime": 32,
-                "serviceTime": 97
-            },
-            {
-                "id": 2,
-                "netTime": 97,
-                "serviceTime": 82
-            },
-            {
-                "id": 3,
-                "netTime": 58,
-                "serviceTime": 42
-            },
-            {
-                "id": 4,
-                "netTime": 3,
-                "serviceTime": 70
-            },
-            {
-                "id": 5,
-                "netTime": 94,
-                "serviceTime": 40
-            },
-            {
-                "id": 6,
-                "netTime": 72,
-                "serviceTime": 81
-            },
-            {
-                "id": 7,
-                "netTime": 30,
-                "serviceTime": 81
-            },
-            {
-                "id": 8,
-                "netTime": 6,
-                "serviceTime": 100
-            },
-            {
-                "id": 9,
-                "netTime": 30,
-                "serviceTime": 94
-            }, {
-                "id": 0,
-                "netTime": 49,
-                "serviceTime": 82
-            },
-            {
-                "id": 1,
-                "netTime": 32,
-                "serviceTime": 97
-            },
-            {
-                "id": 2,
-                "netTime": 97,
-                "serviceTime": 82
-            },
-            {
-                "id": 3,
-                "netTime": 58,
-                "serviceTime": 42
-            },
-            {
-                "id": 4,
-                "netTime": 3,
-                "serviceTime": 70
-            },
-            {
-                "id": 5,
-                "netTime": 94,
-                "serviceTime": 40
-            },
-            {
-                "id": 6,
-                "netTime": 72,
-                "serviceTime": 81
-            },
-            {
-                "id": 7,
-                "netTime": 30,
-                "serviceTime": 81
-            },
-            {
-                "id": 8,
-                "netTime": 6,
-                "serviceTime": 100
-            },
-            {
-                "id": 9,
-                "netTime": 30,
-                "serviceTime": 94
-            }
-        ]
-    }
-];
-//var data = {};
+const Result = require('../core/result.js');
 
 ipcRenderer.on('store-data', (event, message) => {
     //data = message;
-    myEmitter.emit('event', message);
+    // myEmitter.emit('event', message);
+    // console.log(message)
+    myEmitter.emit('dataReceived', message);
 });
 
+// myEmitter.on('event', (id) => {
+//     Result.findById(id).exec(function (err, gettedData) {
+//         if (err) return handleError(err);
+//         console.log(gettedData);
+//         myEmitter.emit('dataReceived', gettedData);
+//     });
+// });
 
-myEmitter.on('event', (res) => {
-    $('#exp').text(res.id);
-    $('#command').text('Comando: ' + res.command);
-    // $('#repeat').text('Repetições: ' + res.exec_time.length);
+myEmitter.on('dataReceived', (res) => {
+    let dataset = {};
+    dataset.command = res.command;
+    dataset.id = res.id;
+    dataset.repeat = res.experiments[0].exec_time.length;
+    dataset.experiments = mountDataset(res.experiments);
+    //dataset.netTime = res.net_time;
+    // console.log(dataset);
+    myEmitter.emit('datasetMounted', dataset);
+});
+
+function mountDataset(data) {
+    let dataset = [];
+
+    data.forEach(element => {
+        let localData = {};
+
+        let count = element.exec_time.length;
+        let values = element.exec_time.reduce((previous, current) => current += previous);
+        values /= count;
+
+        localData.mean = values;
+        localData.netTime = element.net_time;
+        localData.clientId = element.client_id;
+
+        dataset.push(localData);
+    });
+    return dataset;
+};
+
+myEmitter.on('datasetMounted', (dataset) => {
+    console.log(dataset.experiments)
+    $('#exp').text(dataset.id);
+    $('#command').text('Comando: ' + dataset.command);
+    $('#repeat').text('Repetições: ' + dataset.repeat);
+    // $('#repeat').text('Repetições: ' + dataset.exec_time.length);
 
     $('#detail').DataTable({
         language: {
@@ -425,24 +71,28 @@ myEmitter.on('event', (res) => {
         paging: false,
         responsive: true,
         info: false,
-        data: data.exec_time,
+        data: dataset.experiments,
         columns: [
             {
-                data: 'id',
-                title: 'ID'
+                data: 'clientId',
+                title: 'ID Cliente'
             },
             {
                 data: 'netTime',
-                title: 'Tempo de Rede'
+                title: 'Tempo de Rede (ns)'
             },
             {
-                data: 'serviceTime',
-                title: 'Tempo de Serviço'
-            },
+                data: 'mean',
+                title: 'ST Médio (ns)'
+            }
         ]
     });
 
     var table = $('#detail').DataTable();
 
     table.tables().header().to$().addClass('thead-light');
+
 });
+
+
+

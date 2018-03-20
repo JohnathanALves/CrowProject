@@ -135,7 +135,7 @@ refreshclientListBtn.addEventListener('click', function (ev) {
         if (clients.length) {
             $('#clickClient').hide(); //remove o aviso para atualizar a lista de clientes
             $("#cmdFieldset").prop('disabled', false); //permite a inserção dos comandos
-            animateAlert('#clickClient', 'alert-warning', 'alert-danger');
+            // animateAlert('#clickClient', 'alert-warning', 'alert-danger');
         }
         else {
             $('#clickClient').text('Nenhum cliente encontrado.'); //muda o texto do aviso
@@ -294,7 +294,7 @@ sendCommandBtn.addEventListener('click', function (ev) {
 // });
 
 
-tableEmitter.on("dataReady", () => {
+tableEmitter.on("dataReady", (data) => {
     $('#output').DataTable({
         language: {
             "url": "../locale/Portuguese-Brasil.json"
@@ -379,8 +379,8 @@ function getData() {
         Result.find().exec(function (err, gettedData) {
             if (err) return handleError(err);
             data = gettedData;
-            console.log(data);
-            tableEmitter.emit('dataReady');
+            //console.log(data);
+            tableEmitter.emit('dataReady', data);
         });
     }
 };
