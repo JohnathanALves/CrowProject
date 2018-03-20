@@ -78,7 +78,7 @@ connectToDb.addEventListener('click', function (ev) {
             dbConfigured = false;
             $('#dbAlert p').text("Erro: " + err.message);
             $("#cmdFieldset").prop('disabled', true);
-            $('.dbConnected').show();
+            $('#dbConnected').show();
             animateAlert('#dbAlert', 'alert-danger', 'alert-success');
             $('#output').hide();
             console.log(err);
@@ -130,9 +130,9 @@ refreshclientListBtn.addEventListener('click', function (ev) {
             li.appendChild(document.createTextNode(client));
             clientList.appendChild(li);
         });
-        // $("#dbFieldset").prop('disabled', false); //permite a configuração do DB
+
         $('#loadingModal').modal('hide'); // esconde o loading
-        if (clients.length > 0) {
+        if (clients.length) {
             $('#clickClient').hide(); //remove o aviso para atualizar a lista de clientes
             $("#cmdFieldset").prop('disabled', false); //permite a inserção dos comandos
             animateAlert('#clickClient', 'alert-warning', 'alert-danger');
@@ -141,8 +141,15 @@ refreshclientListBtn.addEventListener('click', function (ev) {
             $('#clickClient').text('Nenhum cliente encontrado.'); //muda o texto do aviso
             animateAlert('#clickClient', 'alert-danger', 'alert-warning');
         }
+
+
     }, UDP_TIMEOUT);
+    // $("#dbFieldset").prop('disabled', false); //permite a configuração do DB
+    console.log('teste');
 });
+
+
+
 
 //botão de enviar os comandos
 sendCommandBtn.addEventListener('click', function (ev) {
