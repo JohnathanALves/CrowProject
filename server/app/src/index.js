@@ -151,6 +151,10 @@ refreshclientListBtn.addEventListener('click', function (ev) {
 sendCommandBtn.addEventListener('click', function (ev) {
     ev.preventDefault();
     var form = $("#cmdForm");
+
+    var cont = clients.length;
+    var results = [];
+
     if (dbConfigured) {
         if (form[0].checkValidity() === true) {
 
@@ -160,13 +164,7 @@ sendCommandBtn.addEventListener('click', function (ev) {
             let commandInput = document.getElementById('commandInput')
             let repeatNumber = document.getElementById('repeatNumber')
 
-            console.log('clients: ' + clients);
-
-
-            var cont = clients.length;
-            var results = [];
             clients.forEach(client_addr => {
-
                 //cria o processo filho para o endereço atual
                 const forked = fork('./core/messenger.js');
 
@@ -178,7 +176,6 @@ sendCommandBtn.addEventListener('click', function (ev) {
                             client_id: client_addr,
                             net_time: dados.netTime,
                             exec_time: dados.execTimes
-
                         });
 
                         forked.kill('SIGINT');
@@ -195,22 +192,25 @@ sendCommandBtn.addEventListener('click', function (ev) {
                     loop: repeatNumber.value
                 });
             });
+
             eventEmitter.on('saveResult', res => {
-                console.log(cont);
                 if (cont) {
                     results.push(res);
-                    cont--;
-                    if (!cont) {
+                    cont -=1;
+                    if (cont == 0){
                         eventEmitter.emit('saveData');
                     }
                 }
             });
-            eventEmitter.on('saveData', () => {
+
+            eventEmitter.once('saveData', () => {
+                console.log(`res ${clients.length}`);
                 let exp = new Result({
                     'command': commandInput.value,
                     'experiments': results
                 });
                 exp.save(function (err) {
+                    //console.log('ola');
                     if (err) return console.log('Save Error!');
                     
                     $('#loadingModal').modal('hide'); // esconde o loading
