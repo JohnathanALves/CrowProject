@@ -155,7 +155,7 @@ sendCommandBtn.addEventListener('click', function (ev) {
         if (form[0].checkValidity() === true) {
 
             $('#loadingModal').modal({ backdrop: 'static', keyboard: false }); //chama o modal
-            $('#dbConnected').hide(); //esconde o alert
+            $('#clickClient').hide(); //esconde o alert
 
             let commandInput = document.getElementById('commandInput')
             let repeatNumber = document.getElementById('repeatNumber')
@@ -212,11 +212,13 @@ sendCommandBtn.addEventListener('click', function (ev) {
                 });
                 exp.save(function (err) {
                     if (err) return console.log('Save Error!');
+                    
                     $('#loadingModal').modal('hide'); // esconde o loading
-                    animateAlert('dbConnected', 'alert-success', 'alert-warning');
-                    $('#dbConnected').text('Experimento concluído! Você já pode consultar os novos dados.');
-                    $('#dbConnected').show();
-                    refreshTable(); //atualiza tabela de dados
+                    $('#clickClient').text('Experimento concluído! Você já pode consultar os novos dados.');
+                    $('#clickClient').show();
+                    animateAlert('#clickClient', 'alert-success', 'alert-warning');
+                    resetTable(); //atualiza tabela de dados
+                    getData();
                 });
             })
         }
