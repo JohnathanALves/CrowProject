@@ -39,3 +39,32 @@ app.on('ready', function() {
     mainWindow = null;
   });
 });
+
+// In some file from the main process
+// like main.js
+// const {ipcMain} = require('electron');
+
+// // Attach listener in the main process with the given ID
+// ipcMain.on('request-mainprocess-action', (event, data) => {
+//     // Displays the object sent from the renderer process:
+//     //{
+//     //    message: "Hi",
+//     //    someData: "Let's go"
+//     //}
+//     console.log("aqui");
+//     const modalPath = path.join('file://', __dirname, 'details.html')
+//     let win = new BrowserWindow({parent: top, modal: true, height: 800, frame: false }) //{ frame: false }
+
+//     win.on('closed', () => { 
+//         win = null 
+//     });
+//     win.loadURL(modalPath);
+    
+//     win.webContents.on('did-finish-load', () => {
+//         win.webContents.send('store-data', data);
+//     });
+//     //win.webContents.openDevTools();
+//     win.once('ready-to-show', () => {
+//         win.show();
+//     });
+// });

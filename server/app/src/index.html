@@ -23,11 +23,10 @@
   <!-- Definição das NAVS Tab -->
   <nav class="nav-fill top-buffer">
     <div class="nav nav-tabs" id="nav-tab" role="tablist">
-      <a class="nav-item nav-link active" id="nav-exp-tab" data-toggle="tab" href="#nav-exp" role="tab" aria-controls="nav-exp"
-        aria-selected="true">Experimento</a>
+      <a class="nav-item nav-link" id="nav-exp-tab" data-toggle="tab" href="#nav-exp" role="tab" aria-controls="nav-exp" aria-selected="false">Experimento</a>
       <a class="nav-item nav-link" id="nav-data-tab" data-toggle="tab" href="#nav-data" role="tab" aria-controls="nav-data" aria-selected="false">Dados</a>
-      <a class="nav-item nav-link" id="nav-config-tab" data-toggle="tab" href="#nav-config" role="tab" aria-controls="nav-config"
-        aria-selected="false">Configuração</a>
+      <a class="nav-item nav-link active" id="nav-config-tab" data-toggle="tab" href="#nav-config" role="tab" aria-controls="nav-config"
+        aria-selected="true">Configuração</a>
     </div>
   </nav>
 
@@ -35,7 +34,7 @@
     <!-- Conteúdo das NAVS -->
     <div class="tab-content" id="nav-tabContent">
       <!-- Conteúdo da Nav de experimento -->
-      <div class="tab-pane fade show active" id="nav-exp" role="tabpanel" aria-labelledby="nav-exp-tab">
+      <div class="tab-pane fade" id="nav-exp" role="tabpanel" aria-labelledby="nav-exp-tab">
         <div class="row">
           <div class="col-sm-3">
             <div class="card top-buffer">
@@ -46,7 +45,7 @@
                 <ul class="list-group" id="clientList"></ul>
               </div>
               <div class="card-footer">
-                <button type="button" class="btn btn-primary btn-block" style="display: inline" id="refreshClientList" disabled> 
+                <button type="button" class="btn btn-primary btn-block" style="display: inline" id="refreshClientList" disabled>
                   <i class="fas fa-sync"></i>
                   Atualizar
                 </button>
@@ -87,27 +86,34 @@
       <!-- Conteúdo da Nav de dados -->
       <div class="tab-pane fade" id="nav-data" role="tabpanel" aria-labelledby="nav-data-tab">
         <div id="tableCard" class="card top-buffer">
-          <h1 class="card-header display-4 text-center">Experimentos Realizados</h1>
+          <h1 id="exp" class="card-header display-4 text-center">Experimentos Realizados</h1>
           <div class="card-body">
             <!-- Tabela de dados -->
             <div id="dbConnected" class="alert alert-warning text-center animated pulse treeTimes top-buffer" style="display:block" role="alert">
               Antes de visualizar os dados conecte-me à base de dados na aba "Configuração".
               <!-- Antes de configurar a base de dados atualize a lista de clientes na aba experimento. -->
             </div>
+            <div id="detailDiv" style="display: none">
+              <h5 id="command"></h5>
+              <h5 id="repeat"></h5>
+              <h5 id="date"></h5>
+              <hr>
+            </div>
+
             <div class="row justify-content-center table-top">
               <table id="output" class="table table-hover table-sm" cellspacing="0" width="100%"></table>
             </div>
           </div>
-          <div class="card-footer text-center">
-            <button type="button" class="btn btn-primary" style="display: inline" id="refreshDatatable" disabled> 
-              <i class="fas fa-sync"></i>
-              Atualizar
+          <div id="backDetailDiv" class="card-footer" style="display: none">
+            <button type="button" class="btn btn-dark" style="display: inline" id="refreshDatatable" disabled>
+              <i class="fas fa-chevron-circle-left"></i>
+              Voltar
             </button>
           </div>
         </div>
       </div>
       <!-- Conteúdo da Nav de configuração -->
-      <div class="tab-pane fade" id="nav-config" role="tabpanel" aria-labelledby="nav-config-tab">
+      <div class="tab-pane fade show active" id="nav-config" role="tabpanel" aria-labelledby="nav-config-tab">
         <div class="card top-buffer">
           <div class="card-body">
             <!-- <div id="clickClient" class="alert alert-warning text-center animated pulse treeTimes top-buffer" style="display:block" role="alert">
