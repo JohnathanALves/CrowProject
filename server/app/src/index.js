@@ -78,6 +78,7 @@ connectToDb.addEventListener('click', function (ev) {
             $("#cmdFieldset").prop('disabled', true);
             $('#dbConnected').show();
             animateAlert('#dbAlert', 'alert-danger', 'alert-success');
+            $('#loadingModal').modal('hide'); //esconde o loading
             $('#output').hide();
             console.log(err);
         });
@@ -87,12 +88,14 @@ connectToDb.addEventListener('click', function (ev) {
             socketMan = new SocketMan(interface);
             setTimeout(() => {
                 getData();
+                refreshClient();
                 $('#dbConnected').hide(); //esconde a mensagem de conexão necessária
-                $('#clickClient').text('Antes de realizar um experimento atualize a lista de clientes.'); //muda o texto do aviso
+                //$('#clickClient').text('Antes de realizar um experimento atualize a lista de clientes.'); //muda o texto do aviso
                 $('#dbAlert p').text('Conectado ao servidor MongoDB: ' + db_ip + '. Você já pode realizar seus experimentos ou visualizar os dados.');
                 $("#refreshClientList").prop('disabled', false); //permite a atualização da lista de clientes
                 $('#refreshDatatable').prop('disabled', false); //habilita o botão para atualizar a tabela
                 animateAlert('#dbAlert', 'alert-success', 'alert-danger');
+                //$('#loadingModal').modal('hide'); //esconde o loading
             }, 1000);
 
         });
@@ -110,6 +113,47 @@ connectToDb.addEventListener('click', function (ev) {
 refreshclientListBtn.addEventListener('click', function (ev) {
     ev.preventDefault();
     $('#loadingModal').modal({ backdrop: 'static', keyboard: false }); //mostra o loading
+    refreshClient();
+    // clients = [];
+    // socketMan.findClients(UDP_PORT);
+    // socketMan.on('NewClient', client => {
+    //     if (clients.indexOf(client) == -1) {
+    //         console.log(`Found client: ${client}`);
+    //         clients.push(client); //adiciona ip do cliente a lista;
+    //     }
+    // });
+    // setTimeout(function () {
+    //     socketMan.stopUDP();
+        
+    //     clientList.innerHTML = '';
+        
+    //     clients.forEach(client => {
+    //         let li = document.createElement("li");
+    //         li.className = 'list-group-item text-center';
+    //         li.appendChild(document.createTextNode(client));
+    //         clientList.appendChild(li);
+    //     });
+
+    //     $('#loadingModal').modal('hide'); // esconde o loading
+    //     if (clients.length) {
+    //         $('#clickClient').hide(); //remove o aviso para atualizar a lista de clientes
+    //         $("#cmdFieldset").prop('disabled', false); //permite a inserção dos comandos
+    //         // animateAlert('#clickClient', 'alert-warning', 'alert-danger');
+    //     }
+    //     else {
+    //         $('#clickClient').text('Nenhum cliente encontrado.'); //muda o texto do aviso
+    //         animateAlert('#clickClient', 'alert-danger', 'alert-warning');
+    //     }
+
+
+    // }, UDP_TIMEOUT);
+    // $("#dbFieldset").prop('disabled', false); //permite a configuração do DB
+    //console.log('teste');
+});
+
+
+//atualiza a lista de clientes
+function refreshClient(){
     clients = [];
     socketMan.findClients(UDP_PORT);
     socketMan.on('NewClient', client => {
@@ -139,14 +183,10 @@ refreshclientListBtn.addEventListener('click', function (ev) {
         else {
             $('#clickClient').text('Nenhum cliente encontrado.'); //muda o texto do aviso
             animateAlert('#clickClient', 'alert-danger', 'alert-warning');
+            $('#loadingModal').modal('hide'); //esconde o loading
         }
-
-
     }, UDP_TIMEOUT);
-    // $("#dbFieldset").prop('disabled', false); //permite a configuração do DB
-    console.log('teste');
-});
-
+}
 //botão de enviar os comandos
 sendCommandBtn.addEventListener('click', function (ev) {
     ev.preventDefault();
@@ -217,6 +257,7 @@ sendCommandBtn.addEventListener('click', function (ev) {
                     $('#clickClient').text('Experimento concluído! Você já pode consultar os novos dados.');
                     $('#clickClient').show();
                     animateAlert('#clickClient', 'alert-success', 'alert-warning');
+                    $('#loadingModal').modal('hide'); //esconde o loading
                     resetTable(); //atualiza tabela de dados
                     getData();
                 });
@@ -419,7 +460,7 @@ function resetTable () {
 
 //muda a classe de um alert
 function animateAlert(idAlert, newClass, oldClass) {
-    $('#loadingModal').modal('hide'); //esconde o loading
+    //$('#loadingModal').modal('hide'); //esconde o loading
     $(idAlert).removeClass(oldClass);
     $(idAlert).addClass(newClass);
     $(idAlert).show();
