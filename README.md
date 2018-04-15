@@ -9,11 +9,11 @@ git clone https://github.com/JohnathanALves/CrowProject.git
 ```
 
 Este projeto utiliza o gerenciador de pacotes [npm](https://www.npmjs.com/), que
-já é configurado na instalação do [Nodejs](https://nodejs.org/en/)
+já é configurado na instalação do [Nodejs](https://nodejs.org/en/).
 
 A interface gráfica foi construída com auxílio do framework
 [Electron](https://electronjs.org/), logo, é necessário instalá-lo. Não há
-necessidade de instalar a interface gráfica em máquina que só irão funcionar
+necessidade de instalar a interface gráfica em máquinas que só irão funcionar
 como cliente.
 
 Também é necessário uma instância do [MongoDB](https://www.mongodb.com/) que
@@ -35,7 +35,7 @@ execute o comando:
 node main.js
 ```
 
-Então, no nó cliente, dentro da pasta do projeto sub-diretório **server/app**
+Então, no nó servidor, dentro da pasta do projeto sub-diretório **server/app**
 execute o comando a seguir para abrir a interface gráfica:
 ```bash
 electron .
