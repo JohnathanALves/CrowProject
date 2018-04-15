@@ -1,44 +1,47 @@
 # CrowProject
-Javascript library for performance monitor on distributed systems
+Javascript library for performance monitor on distributed systems. built with 
+NodeJs and Electron.
 
 ## Instruções
 Clone o repositório em seu computador:
-`git clone https://github.com/JohnathanALves/CrowProject.git`
+```bash
+git clone https://github.com/JohnathanALves/CrowProject.git
+```
+
+Este projeto utiliza o gerenciador de pacotes [npm](https://www.npmjs.com/), que
+já é configurado na instalação do [Nodejs](https://nodejs.org/en/)
+
+A interface gráfica foi construída com auxílio do framework
+[Electron](https://electronjs.org/), logo, é necessário instalá-lo. Não há
+necessidade de instalar a interface gráfica em máquina que só irão funcionar
+como cliente.
+
+Também é necessário uma instância do [MongoDB](https://www.mongodb.com/) que
+será utilizada na persistência dos dados.
 
 Dentro dos diretórios ./client e ./server rode o comando:
-`npm install`
-
-Você está pronto para construir as imagens
-
-### Build servidor:
-Dentro da pasta server:
-`docker build -t node-server .`
-
-### Build cliente:
-Dentro da pasta cliente:
-`docker build -t node-client .`
+```bash
+npm install
+```
 
 ## Executando o projeto
 
-### Servidor MongoDB
-clone o container:
-`docker pull esron/ubuntu-mongo`
+Primeiro instacie os clientes.
 
-execute o container com o seguinte comando:
-`docker run -it -p 27017:27017 esron/ubuntu-mongo`
+Em cada nó cliente da rede, dentro da pasta do projeto, no sub-diretório 
+**client/src**
+execute o comando:
+```bash
+node main.js
+```
 
-dentro do container execute:
-`mongod --bind_ip 0.0.0.0`
+Então, no nó cliente, dentro da pasta do projeto sub-diretório **server/app**
+execute o comando a seguir para abrir a interface gráfica:
+```bash
+electron .
+```
 
-### Containers Node
-
-Primeiro instancie seus clientes
-`docker run -it --rm -v <CAMINHO_ABSOLUTO_PARA_A_PASTA_CLIENT/SRC>:/app/src node-client`
-
-Depois instancie um servidor
-`docker run -it --rm -v <CAMINHO_ABSOLUTO_PARA_A_PASTA_SERVER/SRC>:/app/src node-server`
 
 
 ## Trabalhos futuros
- - [x] Conexão com banco de dados MongoDB
- - [ ] Gerar relatório com os resultados
+ - [ ] Melhorar o cálculo do tempo de rede
